@@ -1,3 +1,46 @@
+/* Tailwind configuration*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white text-black font-serif;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-bold font-serif tracking-tight;
+  }
+
+  a {
+    @apply text-red-600 hover:underline;
+  }
+
+  nav {
+    @apply bg-slate-700 font-serif;
+  }
+
+  link {
+    @apply bg-slate-700 text-black hover:bg-[#ff0000] hover:text-white  font-serif;
+  }
+}
+
+@layer components {
+  .header {
+    @apply flex justify-between items-center py-4 px-6 bg-white border-b border-gray-200;
+  }
+
+  .logo {
+    @apply text-3xl font-extrabold uppercase tracking-wide text-red-600;
+  }
+
+  .nav-link {
+    @apply text-gray-800 hover:bg-[#ff0000] hover:text-white transition-colors;
+  }
+
+  .product-card {
+    @apply border border-gray-200;
+  }
+}
