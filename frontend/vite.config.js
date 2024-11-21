@@ -6,5 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 8080
+  },
+  build: {
+    outDir: '/var/www/html',
+    emptyOutDir: true
   }
 });
