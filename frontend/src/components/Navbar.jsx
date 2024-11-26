@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../assets/images/logo.jpg";
-import { Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -15,6 +15,14 @@ const Navbar = () => {
             <div className="md:ml-auto">
               <div className="flex space-x-2"></div>
             </div>
+          </div>
+          <div className="text-right px-5">
+            <NavLink to="/about" className="NavLink">
+              About
+            </NavLink>
+            <NavLink to="/cart" className="NavLink">
+              Cart
+            </NavLink>
           </div>
         </div>
       </div>

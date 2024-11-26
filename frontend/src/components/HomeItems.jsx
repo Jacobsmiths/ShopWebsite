@@ -1,6 +1,9 @@
 import React from "react";
 import ItemCard from "./ItemCard";
 
+// temporary json storage of "items" until I get backend working
+
+
 // this is going to pull from the sql database and then list them with the itemCard
 const HomeItems = () => {
   return (

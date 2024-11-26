@@ -1,46 +1,28 @@
 /* Tailwind configuration*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-white text-black font-serif;
+    @apply text-black font-poppins;
   }
 
   h1,
   h2,
   h3 {
-    @apply font-bold font-serif tracking-tight;
-  }
-
-  a {
-    @apply text-red-600 hover:underline;
+    @apply font-bold font-poppins;
   }
 
   nav {
-    @apply bg-slate-700 font-serif;
-  }
-
-  link {
-    @apply bg-slate-700 text-black hover:bg-[#ff0000] hover:text-white  font-serif;
+    @apply bg-slate-700 font-poppins;
   }
 }
 
 @layer components {
-  .header {
-    @apply flex justify-between items-center py-4 px-6 bg-white border-b border-gray-200;
-  }
-
-  .logo {
-    @apply text-3xl font-extrabold uppercase tracking-wide text-red-600;
-  }
-
-  .nav-link {
-    @apply text-gray-800 hover:bg-[#ff0000] hover:text-white transition-colors;
-  }
-
-  .product-card {
-    @apply border border-gray-200;
+  .NavLink {
+    @apply font-poppins text-slate-50 hover:underline px-5;
   }
 }

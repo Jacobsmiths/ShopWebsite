@@ -1,0 +1,36 @@
+[{
+    "id": 1,
+    "name": "Painting 1",
+    "price": 19.99,
+    "description": "This is the first painting",
+    "stock": 50
+    },
+    {
+        "id": 2,
+        "name": "Painting 2",
+        "price": 29.99,
+        "description": "This is the second paiting about something else",
+        "stock": 30
+    },
+    {
+        "id": 3,
+        "name": "Painting 3",
+        "price": 29.99,
+        "description": "Another description",
+        "stock": 30
+    },
+    {
+        "id": 4,
+        "name": "Painting 4",
+        "price": 29.99,
+        "description": "Another description",
+        "stock": 30
+    },
+    {
+        "id": 5,
+        "name": "Paiting 5",
+        "price": 29.99,
+        "description": "Another description",
+        "stock": 30
+    }
+]

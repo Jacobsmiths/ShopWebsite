@@ -14,7 +14,7 @@ export default {
       },
 
       fontFamily: {
-        san: ['Roboto', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
       }
     },
   },

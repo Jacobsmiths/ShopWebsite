@@ -10,4 +10,4 @@ const errorHandler = (err, res=null, req=null, next=null) => {
     }
 };
 
-export default error;
+export default errorHandler;
