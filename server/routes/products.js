@@ -5,7 +5,9 @@ import {
   addEntry,
   deleteEntry,
   updateEntry,
-} from "../controllers/DatabaseController.js";
+  insertUpdateEntries,
+} from "../controllers/productsDBController.js";
+import { getData } from "../controllers/spreadsheetDBController.js";
 
 const router = express.Router();
 
@@ -22,6 +24,7 @@ const getProducts = async (req, res, next) => {
 
 const getProduct = async (req, res, next) => {
   const id = req.params.id;
+  if (typeof id != "number") return next(); // importamyt tyhggjhf
   getEntry(id)
     .then((obj) => {
       return res.status(200).json(obj);
@@ -78,6 +81,19 @@ const updateProduct = async (req, res, next) => {
     });
 };
 
+const fetchSheet = async (req, res, next) => {
+  const data = await getData();
+
+  insertUpdateEntries(data)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+router.get("/fetchsheet", fetchSheet);
 router.get("/", getProducts);
 router.get("/:id", getProduct);
 router.post("/", addProduct);

@@ -21,58 +21,73 @@ sqlite3.verbose();
 
 let db = null;
 
-export const createDatabase = () => {
-  // this ceates the databse/.sqlite file it is not created already or links it if it has
-  let newdb = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-      new Error(err);
-    } else {
-      createProductTable(newdb);
-      console.log("Database created");
-    }
+export const createDatabase = async () => {
+  return new Promise((resolve, reject) => {
+    const newdb = new sqlite3.Database(dbPath, async (err) => {
+      if (err) {
+        reject(err);
+      }
+      try {
+        await createProductTable(newdb);
+        console.log("Database created");
+        resolve(newdb);
+      } catch (err) {
+        reject(err);
+      }
+    });
   });
-  return newdb;
 };
 
-const createProductTable = (newdb) => {
+const createProductTable = async (newdb) => {
   // String injected into the db.run method below
   const createSqlTable =
-    "CREATE TABLE products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, stock REAL NOT NULL, image_url TEXT)";
+    "CREATE TABLE products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT)";
 
-  // Create the products table if it doesn't exist
-  newdb.exec(createSqlTable, (err) => {
-    if (err) {
-      new Error(err);
-    } else {
-      populateNewDB(newdb);
-      console.log("Products table was made");
-    }
+  return new Promise((resolve, reject) => {
+    newdb.exec(createSqlTable, async (err) => {
+      if (err) {
+        reject(err);
+      }
+      try {
+        await populateNewDB(newdb);
+        console.log("Products table was created");
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    });
   });
 };
 
-const populateNewDB = (newdb) => {
-  const JSObj = fetchJSONData();
-  JSObj.forEach((product) => {
-    newdb.run(
-      `INSERT INTO products (id, name, description, price, stock) VALUES (?, ?, ?, ?, ?)`,
-      [
-        product.id,
-        product.name,
-        product.description,
-        product.price,
-        product.stock,
-      ],
-      (err) => {
-        if (err) {
-          new Error(
-            `Insert failed for product:  ${product.name} Error: ${err.message}`
-          );
-        } else {
-          console.log("Insert successful for product:", product.name);
+const populateNewDB = async (newdb) => {
+  const JSObj = await fetchJSONData();
+  await JSObj.map((product) => {
+    return new Promise((resolve, reject) => {
+      newdb.run(
+        `INSERT INTO products (id, name, description, price, image_url) VALUES (?, ?, ?, ?, ?)`,
+        [
+          product.id,
+          product.name,
+          product.description,
+          product.price,
+          product.image_url,
+        ],
+        (err) => {
+          if (err) {
+            reject(
+              new Error(
+                `Insert failed for product: ${product.name} Error: ${err.message}`
+              )
+            );
+          } else {
+            console.log("Insert successful for product:", product.name);
+            resolve();
+          }
         }
-      }
-    );
+      );
+    });
   });
+  console.log("All products inserted.");
 };
 
 if (!fs.existsSync(dbPath)) {
@@ -106,7 +121,7 @@ const checkEntryExists = (id) => {
 
 // this creates a new promise to be returned based on if there is a limit or not and returns a json object if resolved
 export const getEntries = async (limit) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     let jsonObject;
     let query;
     let params = [];
@@ -119,16 +134,16 @@ export const getEntries = async (limit) => {
     }
 
     // this is the query from the database, taking in an anonymous callback function
-    db.all(query, params, (err, rows) => {
+    await db.all(query, params, async (err, rows) => {
       if (err) {
         reject(new Error(err)); // reject promise if there is an error
       } else {
-        jsonObject = rows.map((row) => ({
+        jsonObject = await rows.map((row) => ({
           id: row.id,
           name: row.name,
           price: row.price,
           description: row.description,
-          stock: row.stock,
+          image_url: row.image_url,
         })); // this is a mapping function to create a json object
         resolve(jsonObject);
       }
@@ -150,7 +165,7 @@ export const getEntry = async (id) => {
             name: row.name,
             price: row.price,
             description: row.description,
-            stock: row.stock,
+            image_url: row.image_url,
           });
         } else {
           reject(new Error("The Id you are looking for couldnt be found"));
@@ -167,13 +182,13 @@ export const getEntry = async (id) => {
 export const addEntry = async (jsonElement) => {
   return new Promise((resolve, reject) => {
     db.run(
-      "INSERT INTO products (id, name, description, price, stock) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO products (id, name, description, price, image_url) VALUES (?, ?, ?, ?, ?)",
       [
         jsonElement.id,
         jsonElement.name,
         jsonElement.description,
         jsonElement.price,
-        jsonElement.stock,
+        jsonElement.image_url,
       ],
       (err) => {
         if (err) {
@@ -209,7 +224,7 @@ export const deleteEntry = async (id) => {
 
 export const updateEntry = async (jsonElement) => {
   const id = parseInt(jsonElement.id);
-  const query = `UPDATE products SET name = ?, description = ?, price = ?, stock = ? WHERE id = ?`;
+  const query = `UPDATE products SET name = ?, description = ?, price = ?, image_url = ? WHERE id = ?`;
 
   return new Promise((resolve, reject) => {
     db.run(
@@ -218,7 +233,7 @@ export const updateEntry = async (jsonElement) => {
         jsonElement.name,
         jsonElement.description,
         jsonElement.price,
-        jsonElement.stock,
+        jsonElement.image_url,
         jsonElement.id,
       ],
       (err) => {
@@ -235,35 +250,25 @@ export const updateEntry = async (jsonElement) => {
 };
 
 export const insertUpdateEntries = async (objList) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      objList.forEach(async (product) => {
-        await db.run(
-          "INSERT INTO products (id, name, price, description, stock) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET",
-          [
-            product.id,
-            product.name,
-            product.price,
-            product.description,
-            product.stock,
-          ],
-          (err) => {
-            reject(
-              new Error(
-                `Failed to isert or update: ${product.name}, message: ${err}`
-              )
-            );
+  objList.forEach((productList) => {
+    return new Promise((resolve, reject) => {
+      const id = productList[0];
+      const name = productList[1];
+      const description = productList[2];
+      const price = productList[3];
+      const image_url = productList[4];
+      console.log(`${id} ${name} ${description} ${price} ${image_url} `);
+      db.run(
+        "INSERT OR REPLACE INTO products (id, name, price, description, image_url) VALUES (?, ?, ?, ?, ?)",
+        [id, name, price, description, image_url],
+        (err) => {
+          if (err) {
+            console.log(err);
+            reject(err);
           }
-        );
-      });
-
-      resolve(
-        "Succeeded in inserting or updating databse given list of entries"
+        }
       );
-    } catch (err) {
-      reject(
-        new Error(`Failed to Insert or Update given list of Entires: ${err}`)
-      );
-    }
+      resolve();
+    });
   });
 };
