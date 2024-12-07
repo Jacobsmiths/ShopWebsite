@@ -257,7 +257,6 @@ export const insertUpdateEntries = async (objList) => {
       const description = productList[2];
       const price = productList[3];
       const image_url = productList[4];
-      console.log(`${id} ${name} ${description} ${price} ${image_url} `);
       db.run(
         "INSERT OR REPLACE INTO products (id, name, price, description, image_url) VALUES (?, ?, ?, ?, ?)",
         [id, name, price, description, image_url],
@@ -272,3 +271,5 @@ export const insertUpdateEntries = async (objList) => {
     });
   });
 };
+
+

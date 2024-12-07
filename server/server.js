@@ -17,9 +17,10 @@ app.use(logger);
 
 // set up routes
 app.use("/api/products", products);
-app.use(notFound);
-app.use(errorHandler);
 
+app.use(notFound);
+
+app.use(errorHandler);
 //This runs database.js just to see if its been made and if not it gets access to it via the db obejct
 // database.js;
 

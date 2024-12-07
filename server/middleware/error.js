@@ -1,14 +1,15 @@
 import colors from "colors";
 
-const errorHandler = (err, res = null, req = null, next = null) => {
-  console.log(`Error: ${err.message}`["red"]);
+const errorHandler = (err, req, res, next) => {
+  console.log(`Error: ${err.message}`.red);
 
-  if (res) {
-    res.status(404).json({ msg: err.message });
-  }
-  if (next) {
-    next();
-  }
+  // Set status code and respond
+  const statusCode = err.status || 500; // Default to 500 if no status is set
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || "Server Error",
+    stack: process.env.NODE_ENV === "production" ? null : err.stack, // Show stack trace only in development
+  });
 };
 
 export default errorHandler;
