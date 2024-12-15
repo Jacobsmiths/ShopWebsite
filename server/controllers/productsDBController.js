@@ -10,97 +10,44 @@ import fs from "fs";
  */
 
 // sets up current directory name
-const __filename = fileURLToPath(import.meta.url);
-const __serverDirname = path.dirname(path.dirname(__filename));
 
 // Define the path to the SQLite database file and creates it if it doens't exist
-const dbPath = path.join(__serverDirname, "products.db");
+const dbPath = "products.db";
 
 // Initialize SQLite to be verbose
 sqlite3.verbose();
 
-let db = null;
-
-export const createDatabase = async () => {
-  return new Promise((resolve, reject) => {
-    const newdb = new sqlite3.Database(dbPath, async (err) => {
-      if (err) {
-        reject(err);
-      }
-      try {
-        await createProductTable(newdb);
-        console.log("Database created");
-        resolve(newdb);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  });
-};
-
-const createProductTable = async (newdb) => {
+const createProductTable = (newdb) => {
   // String injected into the db.run method below
   const createSqlTable =
     "CREATE TABLE products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT)";
-
-  return new Promise((resolve, reject) => {
-    newdb.exec(createSqlTable, async (err) => {
-      if (err) {
-        reject(err);
-      }
-      try {
-        await populateNewDB(newdb);
-        console.log("Products table was created");
-        resolve();
-      } catch (err) {
-        reject(err);
-      }
-    });
-  });
-};
-
-const populateNewDB = async (newdb) => {
-  const JSObj = await fetchJSONData();
-  await JSObj.map((product) => {
-    return new Promise((resolve, reject) => {
-      newdb.run(
-        `INSERT INTO products (id, name, description, price, image_url) VALUES (?, ?, ?, ?, ?)`,
-        [
-          product.id,
-          product.name,
-          product.description,
-          product.price,
-          product.image_url,
-        ],
-        (err) => {
-          if (err) {
-            reject(
-              new Error(
-                `Insert failed for product: ${product.name} Error: ${err.message}`
-              )
-            );
-          } else {
-            console.log("Insert successful for product:", product.name);
-            resolve();
-          }
-        }
-      );
-    });
-  });
-  console.log("All products inserted.");
-};
-
-if (!fs.existsSync(dbPath)) {
-  console.log("Database does not exist. Creating...");
-  db = createDatabase();
-} else {
-  db = new sqlite3.Database("products.db", sqlite3.OPEN_READWRITE, (err) => {
+  newdb.exec(createSqlTable, (err) => {
     if (err) {
-      return new Error(err);
+      return err;
+    }
+    try {
+      console.log("Products table was created");
+    } catch (err) {
+      return err;
     }
   });
-}
+};
 
+const setUpDatabase = () => {
+  const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+      return err;
+    }
+  });
+  createProductTable(db);
+  return db;
+};
+
+let db = setUpDatabase();
+
+// **************** below are the functions using the databse *****************
+
+// this is used to see if the database exists
 const checkEntryExists = (id) => {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM products WHERE id = ?", [id], (err, row) => {
@@ -116,8 +63,6 @@ const checkEntryExists = (id) => {
     });
   });
 };
-
-// **************** below are the functions using the databse *****************
 
 // this creates a new promise to be returned based on if there is a limit or not and returns a json object if resolved
 export const getEntries = async (limit) => {
@@ -249,27 +194,43 @@ export const updateEntry = async (jsonElement) => {
   });
 };
 
-export const insertUpdateEntries = async (objList) => {
-  objList.forEach((productList) => {
-    return new Promise((resolve, reject) => {
-      const id = productList[0];
-      const name = productList[1];
-      const description = productList[2];
-      const price = productList[3];
-      const image_url = productList[4];
-      db.run(
-        "INSERT OR REPLACE INTO products (id, name, price, description, image_url) VALUES (?, ?, ?, ?, ?)",
-        [id, name, price, description, image_url],
-        (err) => {
-          if (err) {
-            console.log(err);
-            reject(err);
-          }
-        }
+export const insertUpdateEntries = async (sheetsList) => {
+  db.serialize(() => {
+    try {
+      db.run("BEGIN TRANSACTION");
+
+      db.run("DELETE FROM products");
+
+      const stmt = db.prepare(
+        "INSERT INTO products (id, name, price, description, image_url) VALUES (?, ?, ?, ?, ?)"
       );
-      resolve();
-    });
+
+      for (const product of sheetsList) {
+        const id = product[4];
+        const name = product[0];
+        const description = product[2];
+        const price = product[1];
+        const image_url = product[3];
+        stmt.run([id, name, price, description, image_url], (err) => {
+          if (err) {
+            console.error("Error inserting product:", err);
+            return err;
+          }
+        });
+      }
+
+      stmt.finalize();
+      
+      db.run("COMMIT", (err) => {
+        if (err) {
+          console.error("Error committing transaction:", err);
+        } else {
+          console.log("All products inserted successfully!");
+        }
+      });
+
+    } catch (err) {
+      return err;
+    }
   });
 };
-
-

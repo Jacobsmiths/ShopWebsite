@@ -3,14 +3,24 @@ import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
 import fetch from "node-fetch";
+import { v4 as uuidv4 } from "uuid";
 
 // this defines a few constant global variables and paths to key information
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
-const rangeVar = "Data!C2:G10";
-const picturesFolder = path.join(__dirname, "../pictures");
+const rangeVar = "Data!C2:F10";
+const imagesFolder = path.join(
+  path.dirname(__dirname),
+  "../frontend/public/images"
+);
+
+// these are the varibles to handle where in the spreadsheets array each element is:
+const nameElement = 0;
+const priceElement = 1;
+const descriptionElement = 2;
+const imageElement = 3;
 
 // this defines the sheets object to use and then the authenticator client which is our bot
 const sheets = google.sheets("v4");
@@ -55,17 +65,18 @@ const downloadFile = async (url, fileName) => {
         reject(new Error(`Failed to fetch: ${response.statusText}`));
       }
 
-      let savePath = path.join(picturesFolder, `./${fileName}.png`);
+      let savePath = path.join(imagesFolder, `./${fileName}.png`);
       const fileStream = fs.createWriteStream(savePath);
 
       response.body.pipe(fileStream);
-      resolve(savePath);
+      resolve(`/images/${fileName}.png`);
     } catch (err) {
       reject(`Error fetching the file: ${err}`);
     }
   });
 };
 
+// this method is what handles the image aka returns file location and stores image file in that location given a url
 const handleImage = async (originalUrl, imageName) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -77,6 +88,12 @@ const handleImage = async (originalUrl, imageName) => {
       reject(err);
     }
   });
+};
+
+//this generate the unique ids for each image
+const generateUniqueID = () => {
+  const uniqueId = uuidv4();
+  return uniqueId;
 };
 
 // this returns the data to store in the database
@@ -92,12 +109,15 @@ export const getData = async () => {
       console.log(values);
 
       for (let i = 0; i < values.length; i++) {
-        let filePath = await handleImage(values[i][4], values[i][1]).catch(
-          (err) => {
-            reject(err);
-          }
-        );
-        values[i][4] = filePath;
+        let filePath = await handleImage(
+          values[i][imageElement],
+          values[i][nameElement]
+        ).catch((err) => {
+          reject(err);
+        });
+        values[i][imageElement] = filePath;
+        const imageID = generateUniqueID();
+        values[i].push(imageID);
       }
 
       console.log(values);
@@ -111,7 +131,7 @@ export const getData = async () => {
 
 export const getImage = async (fileName) => {
   let pngName = `${fileName}.png`;
-  let filePath = path.join(picturesFolder, pngName);
+  let filePath = path.join(imagesFolder, pngName);
   return new Promise((resolve, reject) => {
     try {
       if (!fs.existsSync(filePath)) {

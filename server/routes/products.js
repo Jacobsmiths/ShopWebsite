@@ -110,8 +110,8 @@ const fetchImage = async (req, res, next) => {
 
 router.get("/fetchsheet", fetchSheet);
 router.get("/gallery/:id", fetchImage);
-router.get("/", getProducts);
 router.get("/:id", getProduct);
+router.get("/", getProducts);
 router.post("/", addProduct);
 router.delete("/:id", deleteProduct);
 router.put("/", updateProduct);
