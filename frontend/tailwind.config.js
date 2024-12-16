@@ -10,7 +10,10 @@ export default {
         'navBG': '#490B3D',
       },
       gridTemplateColumns: {
-        '70/30': '70% 30%',
+        'auto-fit-min': 'repeat(auto-fit, minmax(100px, 1fr))',
+      },
+      gridAutoRows: {
+        '100px': '100px',
       },
 
       fontFamily: {

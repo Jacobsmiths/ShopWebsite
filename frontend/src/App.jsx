@@ -8,19 +8,23 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
-
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<MainLayout />}>
-      <Route index element={<HomePage />} />
-      {/*<Route path='/jobs' element={<JobsPage />} />
-      <Route path='/add-job' element={<AddJobPage addJobSubmit={addJob} />} />*/}
-      <Route path="*" element={<NotFoundPage />} />
-    </Route>
-  )
-);
+import CheckoutPage from "./pages/CheckoutPage";
+import ViewPage from "./pages/ViewPage";
 
 const App = () => {
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<HomePage />} />
+        <Route path="view/:id" element={<ViewPage />} />
+        {/* <Route path='/add-job' element={<AddJobPage addJobSubmit={addJob} />} /> */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    )
+  );
+
+  const checkoutId = () => {};
+
   return <RouterProvider router={router} />;
 };
 

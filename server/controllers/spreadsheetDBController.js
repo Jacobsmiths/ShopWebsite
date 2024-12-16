@@ -10,11 +10,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
-const rangeVar = "Data!C2:F10";
+const rangeVar = "Data!C2:F30";
 const imagesFolder = path.join(
   path.dirname(__dirname),
   "../frontend/public/images"
 );
+const imagePath = "/images/";
 
 // these are the varibles to handle where in the spreadsheets array each element is:
 const nameElement = 0;
@@ -52,6 +53,7 @@ const getImageID = async (originalURL) => {
       let end = originalURL.indexOf("/view");
       resolve(originalURL.slice(start, end));
     } catch (err) {
+      console.log(err);
       reject(err);
     }
   });
@@ -67,10 +69,11 @@ const downloadFile = async (url, fileName) => {
 
       let savePath = path.join(imagesFolder, `./${fileName}.png`);
       const fileStream = fs.createWriteStream(savePath);
-
       response.body.pipe(fileStream);
-      resolve(`/images/${fileName}.png`);
+      let stuffPath = path.join(imagePath, `${fileName}.png`);
+      resolve(stuffPath);
     } catch (err) {
+      console.log(err);
       reject(`Error fetching the file: ${err}`);
     }
   });
@@ -85,6 +88,7 @@ const handleImage = async (originalUrl, imageName) => {
       let filePath = await downloadFile(imageUrl, imageName);
       resolve(filePath);
     } catch (err) {
+      console.log(err);
       reject(err);
     }
   });
@@ -124,6 +128,7 @@ export const getData = async () => {
 
       resolve(values);
     } catch (err) {
+      console.log(err);
       reject(err);
     }
   });
@@ -131,7 +136,7 @@ export const getData = async () => {
 
 export const getImage = async (fileName) => {
   let pngName = `${fileName}.png`;
-  let filePath = path.join(imagesFolder, pngName);
+  let filePath = path.join(imagePath, pngName);
   return new Promise((resolve, reject) => {
     try {
       if (!fs.existsSync(filePath)) {

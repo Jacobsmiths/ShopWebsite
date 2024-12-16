@@ -26,3 +26,15 @@
     @apply font-poppins text-slate-50 hover:underline px-5;
   }
 }
+
+.grid-column {
+  padding: 1rem;
+  padding: 1rem;
+}
+
+.gallery {
+  display: flex;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  flex-wrap: wrap;
+}

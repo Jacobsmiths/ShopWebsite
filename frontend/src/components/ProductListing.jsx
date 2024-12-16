@@ -1,56 +1,53 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const ProductListing = ({ product, isProductPage = false }) => {
-  const id = product.id;
-  let description = product.description;
-  const name = product.name;
-  const image_url = product.image_url;
-  const price = product.price;
-  //   const [image, setImage] = useState(null);
-
-  //   useEffect(() => {
-  //     apiCall = `api/gallery/${id}`;
-  //     const fetchImage = async () => {
-  //       try {
-  //         const image = await fetch(apiCall);
-  //         setImage(image);
-  //       } catch (err) {
-  //         console.log("Error fetching data", error);
-  //       }
-  //     };
-  //   });
-
+  const { id, description, name, image_url, price } = product;
+  const link = `/view/${id}`;
   return (
-    <div className="bg-white rounded-xl shadow-md relative">
-      <div className="p-4">
-        <div className="mb-6">
-          <h3 className="text-xl font-bold">{name}</h3>
+    <section>
+      {isProductPage ? (
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col md:flex-row gap-8">
+            {/* Left: Image */}
+            <img
+              src={image_url}
+              alt={name}
+              className="w-full md:w-1/2 object-contain"
+            />
+
+            {/* Right: Details */}
+            <div className="flex flex-col w-full md:w-1/2">
+              {/* Title and Price */}
+              <h1 className="text-xl font-bold mb-2">{name}</h1>
+              <p className="text-xl font-medium text-gray-600 mb-3">
+                ${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </p>
+
+              {/* Description */}
+              <p className="text-gray-800 mb-6">{description}</p>
+
+              {/* Checkout Button */}
+              <button className="self-start bg-blue-500 text-white px-6 py-2 font-medium uppercase tracking-wide hover:bg-blue-600 transition duration-300">
+                Checkout
+              </button>
+            </div>
+          </div>
         </div>
-        <img src={image_url} alt={image_url}></img>
-        {/* {() => {
-          const img = document.createElement("img");
-          img.src = image_url; // Use the relative path to your image file
-          img.alt = "A description of the image";
-          img.style.maxWidth = "500px"; 
-          imageContainer.appendChild(img);
-        }} */}
-        <div className="mb-5">{price}</div>
-
-        <h3 className="text-indigo-500 mb-2">{description}</h3>
-
-        <div className="border border-gray-100 mb-5"></div>
-
-        <div className="flex flex-col lg:flex-row justify-between mb-4">
-          {/* <Link
-            to={`/${id}`}
-            className="h-[36px] bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm"
-          >
-            Look Closer
-          </Link> */}
-        </div>
-      </div>
-    </div>
+      ) : (
+        <Link to={link}>
+          <div className=" border-2 bg-slate-100 border-black p-4">
+            <div className="rounded-lg ">
+              <h3 className="text-xl font-bold">{name}</h3>
+            </div>
+            <img src={image_url} alt={name} className="w-full h-auto" />
+            <div className="text-gray-500 text-right px-2">
+              ${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            </div>
+          </div>
+        </Link>
+      )}
+    </section>
   );
 };
 

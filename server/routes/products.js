@@ -24,7 +24,6 @@ const getProducts = async (req, res, next) => {
 
 const getProduct = async (req, res, next) => {
   const id = req.params.id;
-  if (typeof id != "number") return next();
   getEntry(id)
     .then((obj) => {
       return res.status(200).json(obj);
@@ -95,10 +94,6 @@ const fetchSheet = async (req, res, next) => {
 
 const fetchImage = async (req, res, next) => {
   const id = req.params.id;
-  if (typeof id == "number") {
-    next(new Error("id is not a number"));
-  }
-
   try {
     const obj = await getEntry(id);
     const filePath = await getImage(obj.name);

@@ -1,11 +1,19 @@
 import React from "react";
-import { useState, useEffect } from 'react';
-import ProductListing from './ProductListing';
-import Spinner from './Spinner';
+import { useState, useEffect } from "react";
+import ProductListing from "./ProductListing";
+import Spinner from "./Spinner";
+import Masonry from "react-masonry-css";
 
 const ProductListings = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const breakpointColumnsObj = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1,
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,16 +33,22 @@ const ProductListings = () => {
   }, []);
 
   return (
-    <section className="bg-blue-50 px-4 py-10">
+    <section>
       <div className="container-xl lg:container m-auto">
         {loading ? (
           <Spinner loading={loading} />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="gallery"
+            columnClassName="gallery-column"
+          >
             {products.map((product) => (
-              <ProductListing product={product} key={product.id}/>
+              <div className="p-4">
+                <ProductListing product={product} key={product.id} />
+              </div>
             ))}
-          </div>
+          </Masonry>
         )}
       </div>
     </section>

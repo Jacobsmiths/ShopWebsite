@@ -10,7 +10,7 @@ const Navbar = () => {
           <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start">
             <img className="h-10 w-auto" src={logo} />
             <span className="hidden md:block text-white text-2xl font-bold ml-2">
-              Buy now, Get later
+              Emersons Art Gallery
             </span>
             <div className="md:ml-auto">
               <div className="flex space-x-2"></div>

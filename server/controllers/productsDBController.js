@@ -9,8 +9,6 @@ import fs from "fs";
  * https://www.codecademy.com/learn/connecting-javascript-and-sql/modules/learn-node-sqlite-module/cheatsheet
  */
 
-// sets up current directory name
-
 // Define the path to the SQLite database file and creates it if it doens't exist
 const dbPath = "products.db";
 
@@ -98,29 +96,25 @@ export const getEntries = async (limit) => {
 
 export const getEntry = async (id) => {
   return new Promise((resolve, reject) => {
-    if (!isNaN(id) && id > 0) {
-      let query = "SELECT * FROM products WHERE id = ?";
-      db.get(query, [id], (err, row) => {
-        if (err) {
-          reject(err);
-        }
-        if (row) {
-          resolve({
-            id: row.id,
-            name: row.name,
-            price: row.price,
-            description: row.description,
-            image_url: row.image_url,
-          });
-        } else {
-          reject(new Error("The Id you are looking for couldnt be found"));
-        }
-      });
-    } else {
-      reject(
-        new Error("Product ID you are fetching is negative or not a number")
-      );
-    }
+    let query = "SELECT * FROM products WHERE id = ?";
+    db.get(query, [id], (err, row) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      }
+      if (row) {
+        resolve({
+          id: row.id,
+          name: row.name,
+          price: row.price,
+          description: row.description,
+          image_url: row.image_url,
+        });
+      } else {
+        console.log("The Id you are looking for couldnt be found");
+        reject(new Error("The Id you are looking for couldnt be found"));
+      }
+    });
   });
 };
 
@@ -220,7 +214,7 @@ export const insertUpdateEntries = async (sheetsList) => {
       }
 
       stmt.finalize();
-      
+
       db.run("COMMIT", (err) => {
         if (err) {
           console.error("Error committing transaction:", err);
@@ -228,7 +222,6 @@ export const insertUpdateEntries = async (sheetsList) => {
           console.log("All products inserted successfully!");
         }
       });
-
     } catch (err) {
       return err;
     }
