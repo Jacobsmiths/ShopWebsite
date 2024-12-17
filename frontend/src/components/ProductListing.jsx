@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const ProductListing = ({ product, isProductPage = false }) => {
@@ -7,15 +8,14 @@ const ProductListing = ({ product, isProductPage = false }) => {
   return (
     <section>
       {isProductPage ? (
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row gap-8">
+        <div className="container flex flex-col">
+          <div className="flex flex-col md:flex-row gap-8 mb-12">
             {/* Left: Image */}
             <img
               src={image_url}
               alt={name}
-              className="w-full md:w-1/2 object-contain"
+              className="w-full md:w-1/2 object-contain px-24 py-8"
             />
-
             {/* Right: Details */}
             <div className="flex flex-col w-full md:w-1/2">
               {/* Title and Price */}
@@ -35,7 +35,7 @@ const ProductListing = ({ product, isProductPage = false }) => {
           </div>
         </div>
       ) : (
-        <Link to={link}>
+        <NavLink to={link}>
           <div className=" border-2 bg-slate-100 border-black p-4">
             <div className="rounded-lg ">
               <h3 className="text-xl font-bold">{name}</h3>
@@ -45,7 +45,7 @@ const ProductListing = ({ product, isProductPage = false }) => {
               ${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </div>
           </div>
-        </Link>
+        </NavLink>
       )}
     </section>
   );

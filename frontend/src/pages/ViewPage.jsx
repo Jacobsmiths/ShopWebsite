@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";
 import ProductListing from "../components/ProductListing";
+import { Link } from "react-router-dom";
 
 const ViewPage = () => {
   const { id } = useParams();
@@ -31,10 +32,19 @@ const ViewPage = () => {
 
   return (
     <div>
+      <Link
+        to="/"
+        className="rounded-md px-3 py-2 mt-4 hover:underline hover:text-slate-700"
+      >
+        Go Back
+      </Link>
       {loading ? (
         <Spinner loading={loading} />
       ) : (
-        <ProductListing product={entry} isProductPage={true} />
+        <ProductListing
+          product={entry}
+          isProductPage={true}
+        />
       )}
     </div>
   );
