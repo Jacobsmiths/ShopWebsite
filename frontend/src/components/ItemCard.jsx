@@ -1,7 +1,7 @@
 import React from "react";
 
-const ItemCard = ({ inner, bg = "bg-gray-100", size = "p-6 rounded-lg" }) => {
-  return <div className={`${(bg, size)}`}>{inner}</div>;
+const ItemCard = ({ inner, bg = "bg-slate-100", size = "p-4", other="" }) => {
+  return <div className={`${bg} ${size} ${other}`}>{inner}</div>;
 };
 
 export default ItemCard;

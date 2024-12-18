@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import ProductListing from "./ProductListing";
+import HomeLisiting from "./HomeListing";
 import Spinner from "./Spinner";
 import Masonry from "react-masonry-css";
 
@@ -45,7 +45,7 @@ const ProductListings = () => {
           >
             {products.map((product) => (
               <div className="p-4">
-                <ProductListing product={product} key={product.id} />
+                <HomeLisiting product={product} key={product.id} />
               </div>
             ))}
           </Masonry>
