@@ -10,11 +10,7 @@
     @apply text-black font-poppins;
   }
 
-  h1,
-  h2,
-  h3 {
-    @apply font-bold font-poppins;
-  }
+  
 
   nav {
     @apply bg-slate-700 font-poppins;

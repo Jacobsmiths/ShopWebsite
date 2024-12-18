@@ -1,11 +1,11 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import CheckoutListing from "../components/CheckoutListing";
-import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";
 import { Link } from "react-router-dom";
 import CheckoutForm from "../components/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
+import CompleteForm from "../components/CompleteForm";
 
 const CheckoutPage = ({ stripePromise }) => {
   const { id } = useParams();
@@ -16,7 +16,7 @@ const CheckoutPage = ({ stripePromise }) => {
     image_url: "Na",
   });
   const [loading, setLoading] = useState(true);
-  const [clientSecret, setSecret] = useState("poop");
+  const [clientSecret, setSecret] = useState(null);
 
   useEffect(() => {
     const fetchEntry = async (id) => {
@@ -26,11 +26,10 @@ const CheckoutPage = ({ stripePromise }) => {
         const data = await res.json();
         setEntry(data);
 
-        // Use product details to create a PaymentIntent
         const secretResponse = await fetch("/api/products/create-secret", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items: [data] }), // Send the price to the backend
+          body: JSON.stringify({ items: [data] }),
         });
         const { clientSecret } = await secretResponse.json();
         setSecret(clientSecret);
@@ -43,10 +42,7 @@ const CheckoutPage = ({ stripePromise }) => {
     fetchEntry(id);
   }, [id]);
 
-  const appearance = {
-    theme: "stripe",
-  };
-  // Enable the skeleton loader UI for optimal loading.
+  const appearance = { theme: "stripe" };
   const loader = "auto";
 
   return (
@@ -58,14 +54,14 @@ const CheckoutPage = ({ stripePromise }) => {
       {loading ? (
         <Spinner loading={loading} />
       ) : (
-        clientSecret && ( // Ensure clientSecret is ready
+        clientSecret && (
           <Elements
             options={{ clientSecret, appearance, loader }}
             stripe={stripePromise}
           >
             <div>
               <CheckoutListing product={entry} key={id} />
-              <CheckoutForm />
+              <CheckoutForm id={entry.id} />
             </div>
           </Elements>
         )

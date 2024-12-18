@@ -22,7 +22,7 @@ const App = () => {
         <Route index element={<HomePage />} />
         <Route path="view/:id" element={<ViewPage />} />
         <Route path="checkout/:id" element={<CheckoutPage stripePromise={stripePromise}/>} />
-        <Route path="complete" element = {<CompletePage />} />
+        <Route path="checkout-complete" element={<CompletePage stripePromise={stripePromise}/>} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     )
