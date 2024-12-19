@@ -120,57 +120,63 @@ export default function CompletePage({ payment_intentID }) {
 
   return (
     <div id="payment-status">
-      <div
-        id="status-icon"
-        style={{ backgroundColor: STATUS_CONTENT_MAP[status].iconColor }}
-      >
-        {STATUS_CONTENT_MAP[status].icon}
-      </div>
-      <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
-      {payment_intentID && (
-        <div id="details-table">
-          <table>
-            <tbody>
-              <tr>
-                <td className="TableLabel">id</td>
-                <td id="intent-id" className="TableContent">
-                  {payment_intentID}
-                </td>
-              </tr>
-              <tr>
-                <td className="TableLabel">status</td>
-                <td id="intent-status" className="TableContent">
-                  {status}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
-      {payment_intentID && (
-        <a
-          href={`https://dashboard.stripe.com/payments/${payment_intentID}`}
-          id="view-details"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          View details
-          <svg
-            width="15"
-            height="14"
-            viewBox="0 0 15 14"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ paddingLeft: "5px" }}
+      {loading ? (
+        <p>fart</p>
+      ) : (
+        <>
+          <div
+            id="status-icon"
+            style={{ backgroundColor: STATUS_CONTENT_MAP[status].iconColor }}
           >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M3.125 3.49998C2.64175 3.49998 2.25 3.89173 2.25 4.37498V11.375C2.25 11.8582 2.64175 12.25 3.125 12.25C3.60825 12.25 3.99998 11.8582 3.99998 11.375V4.37498C3.99998 3.89173 3.60825 3.49998 3.125 3.49998ZM3.375 11.125C3.375 11.3778 3.56423 11.625 3.875 11.625C4.18578 11.625 4.375 11.3778 4.375 11.125C4.375 10.8722 4.18578 10.625 3.875 10.625C3.56423 10.625 3.375 10.8722 3.375 11.125ZM3.375 6.125C3.375 6.37783 3.56423 6.625 3.875 6.625C4.18578 6.625 4.375 6.37783 4.375 6.125C4.375 5.87217 4.18578 5.625 3.875 5.625C3.56423 5.625 3.375 5.87217 3.375 6.125ZM3.375 9.625C3.375 9.87783 3.56423 10.125 3.875 10.125C4.18578 10.125 4.375 9.87783 4.375 9.625C4.375 9.37217 4.18578 9.125 3.875 9.125C3.56423 9.125 3.375 9.37217 3.375 9.625Z"
-              fill="white"
-            />
-          </svg>
-        </a>
+            {STATUS_CONTENT_MAP[status].icon}
+          </div>
+          <h2 id="status-text">{STATUS_CONTENT_MAP[status].text}</h2>
+          {payment_intentID && (
+            <div id="details-table">
+              <table>
+                <tbody>
+                  <tr>
+                    <td className="TableLabel">id</td>
+                    <td id="intent-id" className="TableContent">
+                      {payment_intentID}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="TableLabel">status</td>
+                    <td id="intent-status" className="TableContent">
+                      {status}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+          {payment_intentID && (
+            <a
+              href={`https://dashboard.stripe.com/payments/${payment_intentID}`}
+              id="view-details"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              View details
+              <svg
+                width="15"
+                height="14"
+                viewBox="0 0 15 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ paddingLeft: "5px" }}
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M3.125 3.49998C2.64175 3.49998 2.25 3.89173 2.25 4.37498V11.375C2.25 11.8582 2.64175 12.25 3.125 12.25C3.60825 12.25 3.99998 11.8582 3.99998 11.375V4.37498C3.99998 3.89173 3.60825 3.49998 3.125 3.49998ZM3.375 11.125C3.375 11.3778 3.56423 11.625 3.875 11.625C4.18578 11.625 4.375 11.3778 4.375 11.125C4.375 10.8722 4.18578 10.625 3.875 10.625C3.56423 10.625 3.375 10.8722 3.375 11.125ZM3.375 6.125C3.375 6.37783 3.56423 6.625 3.875 6.625C4.18578 6.625 4.375 6.37783 4.375 6.125C4.375 5.87217 4.18578 5.625 3.875 5.625C3.56423 5.625 3.375 5.87217 3.375 6.125ZM3.375 9.625C3.375 9.87783 3.56423 10.125 3.875 10.125C4.18578 10.125 4.375 9.87783 4.375 9.625C4.375 9.37217 4.18578 9.125 3.875 9.125C3.56423 9.125 3.375 9.37217 3.375 9.625Z"
+                  fill="white"
+                />
+              </svg>
+            </a>
+          )}
+        </>
       )}
     </div>
   );
