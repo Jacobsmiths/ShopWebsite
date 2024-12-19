@@ -1,4 +1,4 @@
-import colors from "colors";
+const colors = require("colors");
 
 const errorHandler = (err, req, res, next) => {
   console.log(`Error: ${err.message}`.red);
@@ -12,4 +12,4 @@ const errorHandler = (err, req, res, next) => {
   });
 };
 
-export default errorHandler;
+module.exports = errorHandler;

@@ -1,4 +1,4 @@
-import colors from 'colors';
+const colors = require('colors');
 
 const logger = (req, res, next) => {
   const methodColors = {
@@ -8,7 +8,7 @@ const logger = (req, res, next) => {
     DELETE: 'red',
   };
 
-  const color = methodColors[req.method] || white;
+  const color = methodColors[req.method] || 'white';
 
   console.log(
     `${req.method} ${req.protocol}://${req.get('host')}${req.originalUrl}`[
@@ -18,4 +18,4 @@ const logger = (req, res, next) => {
   next();
 };
 
-export default logger;
+module.exports = logger;

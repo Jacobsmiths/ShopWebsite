@@ -1,4 +1,4 @@
-import fs from "fs";
+const fs = require('fs');
 
 const fetchJSONData = async () => {
   return new Promise((resolve, reject) => {
@@ -10,4 +10,4 @@ const fetchJSONData = async () => {
   });
 };
 
-export default fetchJSONData;
+module.exports = fetchJSONData;

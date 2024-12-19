@@ -1,14 +1,14 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   getEntries,
   getEntry,
   addEntry,
   deleteEntry,
   updateEntry,
   insertUpdateEntries,
-} from "../controllers/productsDBController.js";
-import { getData, getImage } from "../controllers/spreadsheetDBController.js";
-import { createPaymentIntent, retrievePaymentIntent } from "../controllers/paymentController.js";
+} = require("../controllers/productsDBController");
+const { getData, getImage } = require("../controllers/spreadsheetDBController");
+const { createPaymentIntent, retrievePaymentIntent } = require("../controllers/paymentController");
 
 const router = express.Router();
 
@@ -114,4 +114,4 @@ router.post("/", addProduct);
 router.delete("/:id", deleteProduct);
 router.put("/", updateProduct);
 
-export default router;
+module.exports = router;

@@ -1,64 +1,59 @@
-import { google } from "googleapis";
-import { fileURLToPath } from "url";
-import path from "path";
-import fs from "fs";
-import fetch from "node-fetch";
-import { v4 as uuidv4 } from "uuid";
+const { google } = require("googleapis");
+const path = require("path");
+const fs = require("fs");
+const fetch = require("node-fetch");
+const { v4: uuidv4 } = require("uuid");
 
-// this defines a few constant global variables and paths to key information
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Define a few constant global variables and paths to key information
 const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
 const rangeVar = "Data!C2:F30";
-const imagesFolder = path.join(
-  path.dirname(__dirname),
-  "../frontend/public/images"
-);
+const imagesFolder = path.join(path.dirname(__dirname), "../frontend/public/images");
 const imagePath = "/images/";
 
-// these are the varibles to handle where in the spreadsheets array each element is:
+// Variables to handle spreadsheet columns
 const nameElement = 0;
 const priceElement = 1;
 const descriptionElement = 2;
 const imageElement = 3;
 
-// this defines the sheets object to use and then the authenticator client which is our bot
+// Initialize Sheets API client
 const sheets = google.sheets("v4");
 const auth = new google.auth.GoogleAuth({
   keyFile: KEY_FILE_PATH,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"], // Read-only access to Sheets definition
+  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"], // Read-only access to Sheets
 });
 
-// Authenticate/ set global authenticator client for API requests
-export const authenticate = async () => {
+// Authenticate and set global authenticator client for API requests
+const authenticate = async () => {
   try {
     const authClient = await auth.getClient();
     google.options({ auth: authClient });
     console.log("Successfully authenticated!");
   } catch (err) {
-    return err;
+    console.error("Authentication failed:", err);
+    throw err;
   }
 };
 
-// given an image id, it will return an image url
-const getImageURL = (imageID) => {
-  return `https://drive.google.com/uc?id=${imageID}`;
-};
+// Return the image URL given an image ID
+const getImageURL = (imageID) => `https://drive.google.com/uc?id=${imageID}`;
 
+// Extract image ID from the original URL
 const getImageID = async (originalURL) => {
   return new Promise((resolve, reject) => {
     try {
-      let start = originalURL.indexOf("/d/") + 3;
-      let end = originalURL.indexOf("/view");
+      const start = originalURL.indexOf("/d/") + 3;
+      const end = originalURL.indexOf("/view");
       resolve(originalURL.slice(start, end));
     } catch (err) {
-      console.log(err);
+      console.error("Error extracting image ID:", err);
       reject(err);
     }
   });
 };
 
+// Download image from the URL and save it to the images folder
 const downloadFile = async (url, fileName) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -67,76 +62,75 @@ const downloadFile = async (url, fileName) => {
         reject(new Error(`Failed to fetch: ${response.statusText}`));
       }
 
-      let savePath = path.join(imagesFolder, `./${fileName}.png`);
+      const savePath = path.join(imagesFolder, `./${fileName}.png`);
       const fileStream = fs.createWriteStream(savePath);
       response.body.pipe(fileStream);
-      let stuffPath = path.join(imagePath, `${fileName}.png`);
+
+      const stuffPath = path.join(imagePath, `${fileName}.png`);
       resolve(stuffPath);
     } catch (err) {
-      console.log(err);
+      console.error("Error downloading file:", err);
       reject(`Error fetching the file: ${err}`);
     }
   });
 };
 
-// this method is what handles the image aka returns file location and stores image file in that location given a url
+// Handle image processing: downloading and storing
 const handleImage = async (originalUrl, imageName) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let imageId = await getImageID(originalUrl);
-      let imageUrl = getImageURL(imageId);
-      let filePath = await downloadFile(imageUrl, imageName);
+      const imageId = await getImageID(originalUrl);
+      const imageUrl = getImageURL(imageId);
+      const filePath = await downloadFile(imageUrl, imageName);
       resolve(filePath);
     } catch (err) {
-      console.log(err);
+      console.error("Error handling image:", err);
       reject(err);
     }
   });
 };
 
-//this generate the unique ids for each image
-const generateUniqueID = () => {
-  const uniqueId = uuidv4();
-  return uniqueId;
-};
+// Generate a unique ID using uuid
+const generateUniqueID = () => uuidv4();
 
-// this returns the data to store in the database
-export const getData = async () => {
+// Fetch the data from the Google Sheets and process each row
+const getData = async () => {
   return new Promise(async (resolve, reject) => {
     try {
       const data = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREAD_SHEET_ID,
-        range: rangeVar, // THIS IS THE RANGE THAT
+        range: rangeVar, // Specify the range in the sheet
       });
 
-      let values = data.data.values;
-      console.log(values);
+      const values = data.data.values;
+      console.log("Fetched values from spreadsheet:", values);
 
       for (let i = 0; i < values.length; i++) {
-        let filePath = await handleImage(
-          values[i][imageElement],
-          values[i][nameElement]
-        ).catch((err) => {
+        try {
+          const filePath = await handleImage(values[i][imageElement], values[i][nameElement]);
+          values[i][imageElement] = filePath;
+          const imageID = generateUniqueID();
+          values[i].push(imageID);
+        } catch (err) {
+          console.error("Error handling image for row:", i, err);
           reject(err);
-        });
-        values[i][imageElement] = filePath;
-        const imageID = generateUniqueID();
-        values[i].push(imageID);
+        }
       }
 
-      console.log(values);
-
+      console.log("Processed values:", values);
       resolve(values);
     } catch (err) {
-      console.log(err);
+      console.error("Error fetching data from Sheets:", err);
       reject(err);
     }
   });
 };
 
-export const getImage = async (fileName) => {
-  let pngName = `${fileName}.png`;
-  let filePath = path.join(imagePath, pngName);
+// Retrieve image path for a given file name
+const getImage = async (fileName) => {
+  const pngName = `${fileName}.png`;
+  const filePath = path.join(imagePath, pngName);
+  
   return new Promise((resolve, reject) => {
     try {
       if (!fs.existsSync(filePath)) {
@@ -144,11 +138,22 @@ export const getImage = async (fileName) => {
       }
       resolve(filePath);
     } catch (err) {
+      console.error("Error checking file existence:", err);
       reject(err);
     }
   });
 };
 
+// Authenticate when the module is loaded
 authenticate().catch((err) => {
-  new Error(`failed the authenticate Sheets Bot!: ${err}`);
+  console.error("Failed to authenticate Sheets Bot:", err);
 });
+
+module.exports = {
+  authenticate,
+  getData,
+  getImage,
+  handleImage,
+  downloadFile,
+  generateUniqueID,
+};
