@@ -1,12 +1,9 @@
 const express = require("express");
+require("dotenv").config();
 const errorHandler = require("./middleware/error");
 const notFound = require("./middleware/notFound");
 const logger = require("./middleware/logger");
 const products = require("./routes/products");
-const dotenv = require("dotenv");
-
-// Load environment variables from the .env file
-dotenv.config();
 
 const port = 8000;
 
