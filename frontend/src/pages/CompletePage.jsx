@@ -10,7 +10,7 @@ const CompletePage = () => {
   return (
     <div>
       fart
-      <CompleteForm payment_intent={paymentIntent} />
+      <CompleteForm payment_intentID={paymentIntent} />
     </div>
   );
 };
