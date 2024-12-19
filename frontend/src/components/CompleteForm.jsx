@@ -93,10 +93,10 @@ export default function CompletePage({ payment_intentID }) {
       const turd = async () => {
         const troll = await fetch("/api/products");
         const res = await fetch("/api/products/get-secret", {
-          method: POST,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ payment_intentID: payment_intentID }),
-        });
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ payment_intentID: payment_intentID }),
+          });
         const { paymentIntent } = await res.json();
         setStatus(paymentIntent.status);
       };
