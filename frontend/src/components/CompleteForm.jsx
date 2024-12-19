@@ -96,7 +96,7 @@ export default function CompletePage({ payment_intentID }) {
         const res = await fetch("/api/products/get-secret", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ payment_intentID }),
+          body: JSON.stringify({ payment_intentID: payment_intentID }),
         });
 
         if (!res.ok) {
