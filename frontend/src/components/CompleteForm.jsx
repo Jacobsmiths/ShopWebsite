@@ -89,10 +89,11 @@ export default function CompletePage({ payment_intentID }) {
   const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
-    if (!payment_intentID || !loading) return; // Don't fetch if loading is false
+    if (!payment_intentID) return; // Don't fetch if payment_intentID is not available
 
     const fetchPaymentIntent = async () => {
       try {
+        console.log("Fetching payment intent..."); // Added logging
         const res = await fetch("/api/products/get-secret", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -105,16 +106,17 @@ export default function CompletePage({ payment_intentID }) {
         }
 
         const { paymentIntent } = await res.json();
+        console.log("Payment intent fetched", paymentIntent); // Added logging
         setStatus(paymentIntent.status);
-        setLoading(false); // Set loading to false after fetching
       } catch (error) {
         console.error("Error fetching payment intent:", error);
-        setLoading(false); // Stop loading in case of error
+      } finally {
+        setLoading(false); // Stop loading in either case
       }
     };
 
     fetchPaymentIntent();
-  }, [payment_intentID, loading]); // Trigger only if payment_intentID or loading changes
+  }, [payment_intentID]); // Trigger only if payment_intentID changes
 
   return (
     <div id="payment-status">
