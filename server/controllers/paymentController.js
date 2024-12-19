@@ -3,12 +3,15 @@ import Stripe from "stripe";
 const stripe = Stripe(process.env.SECRET_API_KEY);
 
 export const retrievePaymentIntent = async () => {
-  const { paymentIntentId } = req.body;
+  const { payment_intentID } = req.body;
   try {
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    res.send({paymentIntent: paymentIntent});
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      payment_intentID
+    );
+    res.send({ paymentIntent: paymentIntent });
   } catch (error) {
     console.error("Error retrieving payment intent:", error);
+    res.status(500).send({ error: "Error retrieving payment intent" });
   }
 };
 
