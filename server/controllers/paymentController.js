@@ -4,6 +4,7 @@ const stripe = Stripe(process.env.SECRET_API_KEY);
 
 const retrievePaymentIntent = async (req, res) => {
   const { payment_intentID } = req.body;
+  
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(payment_intentID);
     res.send({ paymentIntent: paymentIntent });
