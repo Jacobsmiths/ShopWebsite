@@ -27,7 +27,7 @@ export default function CheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `https://localhost:8080/checkout-complete`,
+        return_url: `https://thewaitingmarket.me/checkout-complete`,
       },
     });
 

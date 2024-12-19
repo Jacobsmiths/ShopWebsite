@@ -8,7 +8,8 @@ const CompletePage = () => {
   const redirectStatus = searchParams.get("redirect_status");
 
 
-  return <div>fart
+  return <div>
+    fart
     <CompleteForm payment_intent={paymentIntent}/>
   </div>;
 };

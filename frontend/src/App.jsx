@@ -28,7 +28,6 @@ const App = () => {
     )
   );
 
-  const checkoutId = () => {};
 
   return <RouterProvider router={router} />;
 };

@@ -84,12 +84,22 @@ const STATUS_CONTENT_MAP = {
   },
 };
 
-export default function CompletePage({
-  payment_intent
-}) {
+export default function CompletePage({ payment_intentID }) {
+  const [status, setStatus] = useState(STATUS_CONTENT_MAP.default);
+  const intentId = payment_intentID;
 
-  const status = payment_intent.status;
-  const intentId = payment_intent;
+  useEffect((payment_intentID) => {
+    const turd = async () => {
+      const res = await fetch("/api/products/get-secret", {
+        method: POST,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payment_intentID }),
+      });
+      const { paymentIntent } = await res.json();
+      setStatus(paymentIntent.status);
+    };
+    turd(payment_intentID);
+  }, []);
 
   return (
     <div id="payment-status">

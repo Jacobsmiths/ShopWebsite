@@ -4,7 +4,7 @@ import ItemCard from "./ItemCard";
 
 const ViewListing = ({ product }) => {
   const { id, description, name, image_url, price } = product;
-  const checkoutUrl = `/checkout/${id}`;
+  const checkoutUrl = `https://thewaitingmarket.me/checkout/${id}`;
 
   return (
     <div>

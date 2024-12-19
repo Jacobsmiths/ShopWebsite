@@ -5,7 +5,7 @@ import logger from "./middleware/logger.js";
 import products from "./routes/products.js";
 
 
-const port = process.env.PORT || 8080;
+const port = 8000;
 
 // creates an express app
 const app = express();

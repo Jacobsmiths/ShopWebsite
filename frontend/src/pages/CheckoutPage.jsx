@@ -5,7 +5,6 @@ import Spinner from "../components/Spinner";
 import { Link } from "react-router-dom";
 import CheckoutForm from "../components/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
-import CompleteForm from "../components/CompleteForm";
 
 const CheckoutPage = ({ stripePromise }) => {
   const { id } = useParams();

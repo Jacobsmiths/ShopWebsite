@@ -8,7 +8,7 @@ import {
   insertUpdateEntries,
 } from "../controllers/productsDBController.js";
 import { getData, getImage } from "../controllers/spreadsheetDBController.js";
-import { createPaymentIntent } from "../controllers/paymentController.js";
+import { createPaymentIntent, retrievePaymentIntent } from "../controllers/paymentController.js";
 
 const router = express.Router();
 
@@ -104,6 +104,7 @@ const fetchImage = async (req, res, next) => {
   }
 };
 
+router.post("/get-secret", retrievePaymentIntent);
 router.post("/create-secret", createPaymentIntent);
 router.get("/fetchsheet", fetchSheet);
 router.get("/gallery/:id", fetchImage);

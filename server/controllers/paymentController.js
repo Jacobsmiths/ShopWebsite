@@ -1,8 +1,16 @@
 import Stripe from "stripe";
 
-const stripe = Stripe(
-  "sk_test_51QWWzXP3msuX5JsQHGVPHBDLYFWxQXgg6vKhTeFArfEdCr2WABd20HW9AulLB5QWLmpBHjMaSd7t1LW2UGmyn7230092OFLqyW"
-);
+const stripe = Stripe(process.env.SECRET_API_KEY);
+
+export const retrievePaymentIntent = async () => {
+  const { paymentIntentId } = req.body;
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    res.send({paymentIntent: paymentIntent});
+  } catch (error) {
+    console.error("Error retrieving payment intent:", error);
+  }
+};
 
 const calculateOrderAmount = (items) => {
   let total = 0;
@@ -14,7 +22,6 @@ const calculateOrderAmount = (items) => {
 
 export const createPaymentIntent = async (req, res, next) => {
   const { items } = req.body;
-  console.log(items);
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
     amount: calculateOrderAmount(items) * 100,
