@@ -9,4 +9,10 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+const productLoader = async ({ params }) => {
+  const res = await fetch(`/api/products/${params.id}`);
+  const data = await res.json();
+  return data;
+};
+
+export { HomePage as default, productLoader };

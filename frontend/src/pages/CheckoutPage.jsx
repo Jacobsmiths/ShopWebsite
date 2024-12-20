@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import CheckoutListing from "../components/CheckoutListing";
 import Spinner from "../components/Spinner";
 import { Link } from "react-router-dom";
@@ -7,28 +7,18 @@ import CheckoutForm from "../components/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 
 const CheckoutPage = ({ stripePromise }) => {
-  const { id } = useParams();
-  const [entry, setEntry] = useState({
-    id: 0,
-    description: "blank",
-    price: 1000,
-    image_url: "Na",
-  });
+  const product = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [clientSecret, setSecret] = useState(null);
 
   useEffect(() => {
-    const fetchEntry = async (id) => {
+    const fetchEntry = async () => {
       try {
-        // Fetch product details
-        const res = await fetch(`/api/products/${id}`);
-        const data = await res.json();
-        setEntry(data);
 
         const secretResponse = await fetch("/api/products/create-secret", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items: [data] }),
+          body: JSON.stringify({ items: [product] }),
         });
         const { clientSecret } = await secretResponse.json();
         setSecret(clientSecret);
@@ -38,8 +28,8 @@ const CheckoutPage = ({ stripePromise }) => {
         setLoading(false);
       }
     };
-    fetchEntry(id);
-  }, [id]);
+    fetchEntry();
+  }, []);
 
   const appearance = { theme: "stripe" };
   const loader = "auto";
@@ -59,8 +49,8 @@ const CheckoutPage = ({ stripePromise }) => {
             stripe={stripePromise}
           >
             <div>
-              <CheckoutListing product={entry} key={id} />
-              <CheckoutForm id={entry.id} />
+              <CheckoutListing product={product} key={product.id} />
+              <CheckoutForm  />
             </div>
           </Elements>
         )

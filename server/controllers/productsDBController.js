@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3');
+const sqlite3 = require("sqlite3");
 
 /**
  * almost everything done here is taken from:
@@ -6,7 +6,7 @@ const sqlite3 = require('sqlite3');
  */
 
 // Define the path to the SQLite database file and creates it if it doesn't exist
-const dbPath = 'products.db';
+const dbPath = "products.db";
 
 // Initialize SQLite to be verbose
 sqlite3.verbose();
@@ -14,13 +14,13 @@ sqlite3.verbose();
 const createProductTable = (newdb) => {
   // String injected into the db.run method below
   const createSqlTable =
-    'CREATE TABLE products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT)';
+    "CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT, available BOOLEAN)";
   newdb.exec(createSqlTable, (err) => {
     if (err) {
       return err;
     }
     try {
-      console.log('Products table was created');
+      console.log("Products table was created");
     } catch (err) {
       return err;
     }
@@ -28,15 +28,23 @@ const createProductTable = (newdb) => {
 };
 
 const setUpDatabase = () => {
-  const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-      return err;
+  const db = new sqlite3.Database(
+    dbPath,
+    sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
+    (err) => {
+      if (err) {
+        console.error("Error opening database:", err.message);
+      }
     }
-  });
+  );
+
+  // Create the products table if it doesn't exist
   createProductTable(db);
+
   return db;
 };
 
+// Initialize the database
 let db = setUpDatabase();
 
 // **************** below are the functions using the database *****************
@@ -44,15 +52,15 @@ let db = setUpDatabase();
 // this is used to see if the database exists
 const checkEntryExists = (id) => {
   return new Promise((resolve, reject) => {
-    db.get('SELECT * FROM products WHERE id = ?', [id], (err, row) => {
+    db.get("SELECT * FROM products WHERE id = ?", [id], (err, row) => {
       if (err) {
         reject(
           new Error(`Failed to check if entry exists in database: ${err}`)
         );
       } else if (row) {
-        resolve(false);
-      } else {
         resolve(true);
+      } else {
+        resolve(false);
       }
     });
   });
@@ -66,10 +74,10 @@ const getEntries = async (limit) => {
     let params = [];
     if (!isNaN(limit) && limit > 0) {
       // is there a limit, if so apply it to the query else not
-      query = 'SELECT * FROM products LIMIT ?';
+      query = "SELECT * FROM products LIMIT ?";
       params = [limit];
     } else {
-      query = 'SELECT * FROM products';
+      query = "SELECT * FROM products";
     }
 
     // this is the query from the database, taking in an anonymous callback function
@@ -92,7 +100,7 @@ const getEntries = async (limit) => {
 
 const getEntry = async (id) => {
   return new Promise((resolve, reject) => {
-    let query = 'SELECT * FROM products WHERE id = ?';
+    let query = "SELECT * FROM products WHERE id = ?";
     db.get(query, [id], (err, row) => {
       if (err) {
         console.log(err);
@@ -107,8 +115,8 @@ const getEntry = async (id) => {
           image_url: row.image_url,
         });
       } else {
-        console.log('The Id you are looking for couldn\'t be found');
-        reject(new Error('The Id you are looking for couldn\'t be found'));
+        console.log("The Id you are looking for couldn't be found");
+        reject(new Error("The Id you are looking for couldn't be found"));
       }
     });
   });
@@ -117,7 +125,7 @@ const getEntry = async (id) => {
 const addEntry = async (jsonElement) => {
   return new Promise((resolve, reject) => {
     db.run(
-      'INSERT INTO products (id, name, description, price, image_url) VALUES (?, ?, ?, ?, ?)',
+      "INSERT INTO products (id, name, description, price, image_url) VALUES (?, ?, ?, ?, ?)",
       [
         jsonElement.id,
         jsonElement.name,
@@ -133,7 +141,7 @@ const addEntry = async (jsonElement) => {
             )
           );
         } else {
-          resolve('Insert successful for product:', jsonElement.name);
+          resolve("Insert successful for product:", jsonElement.name);
         }
       }
     );
@@ -142,7 +150,7 @@ const addEntry = async (jsonElement) => {
 
 const deleteEntry = async (id) => {
   return new Promise((resolve, reject) => {
-    db.run('DELETE FROM products WHERE id = ?', [id], (err) => {
+    db.run("DELETE FROM products WHERE id = ?", [id], (err) => {
       if (err) {
         reject(
           new Error(
@@ -187,12 +195,12 @@ const updateEntry = async (jsonElement) => {
 const insertUpdateEntries = async (sheetsList) => {
   db.serialize(() => {
     try {
-      db.run('BEGIN TRANSACTION');
+      db.run("BEGIN TRANSACTION");
 
-      db.run('DELETE FROM products');
+      db.run("DELETE FROM products");
 
       const stmt = db.prepare(
-        'INSERT INTO products (id, name, price, description, image_url) VALUES (?, ?, ?, ?, ?)'
+        "INSERT INTO products (id, name, price, description, image_url) VALUES (?, ?, ?, ?, ?)"
       );
 
       for (const product of sheetsList) {
@@ -203,7 +211,7 @@ const insertUpdateEntries = async (sheetsList) => {
         const image_url = product[3];
         stmt.run([id, name, price, description, image_url], (err) => {
           if (err) {
-            console.error('Error inserting product:', err);
+            console.error("Error inserting product:", err);
             return err;
           }
         });
@@ -211,11 +219,11 @@ const insertUpdateEntries = async (sheetsList) => {
 
       stmt.finalize();
 
-      db.run('COMMIT', (err) => {
+      db.run("COMMIT", (err) => {
         if (err) {
-          console.error('Error committing transaction:', err);
+          console.error("Error committing transaction:", err);
         } else {
-          console.log('All products inserted successfully!');
+          console.log("All products inserted successfully!");
         }
       });
     } catch (err) {
