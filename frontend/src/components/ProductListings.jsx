@@ -45,7 +45,7 @@ const ProductListings = () => {
           >
             {products.map((product) => (
               <div className="p-4">
-                <HomeLisiting product={product} key={product.id} />
+                <HomeLisiting product={product} key={product.id}/>
               </div>
             ))}
           </Masonry>

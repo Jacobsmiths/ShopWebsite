@@ -8,7 +8,10 @@ const { v4: uuidv4 } = require("uuid");
 const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
 const rangeVar = "Data!C2:F30";
-const imagesFolder = path.join(path.dirname(__dirname), "../frontend/public/images");
+const imagesFolder = path.join(
+  path.dirname(__dirname),
+  "../frontend/public/images"
+);
 const imagePath = "/images/";
 
 // Variables to handle spreadsheet columns
@@ -42,14 +45,9 @@ const getImageURL = (imageID) => `https://drive.google.com/uc?id=${imageID}`;
 // Extract image ID from the original URL
 const getImageID = async (originalURL) => {
   return new Promise((resolve, reject) => {
-    try {
-      const start = originalURL.indexOf("/d/") + 3;
-      const end = originalURL.indexOf("/view");
-      resolve(originalURL.slice(start, end));
-    } catch (err) {
-      console.error("Error extracting image ID:", err);
-      reject(err);
-    }
+    const start = originalURL.indexOf("/d/") + 3;
+    const end = originalURL.indexOf("/view");
+    resolve(originalURL.slice(start, end));
   });
 };
 
@@ -63,8 +61,8 @@ const downloadFile = async (url, fileName) => {
       }
 
       const savePath = path.join(imagesFolder, `./${fileName}.png`);
-      const fileStream = fs.createWriteStream(savePath);
-      response.body.pipe(fileStream);
+      const fileStream = await fs.createWriteStream(savePath);
+      await response.body.pipe(fileStream);
 
       const stuffPath = path.join(imagePath, `${fileName}.png`);
       resolve(stuffPath);
@@ -80,7 +78,7 @@ const handleImage = async (originalUrl, imageName) => {
   return new Promise(async (resolve, reject) => {
     try {
       const imageId = await getImageID(originalUrl);
-      const imageUrl = getImageURL(imageId);
+      const imageUrl = await getImageURL(imageId);
       const filePath = await downloadFile(imageUrl, imageName);
       resolve(filePath);
     } catch (err) {
@@ -101,36 +99,59 @@ const getData = async () => {
         spreadsheetId: SPREAD_SHEET_ID,
         range: rangeVar, // Specify the range in the sheet
       });
-
       const values = data.data.values;
-      console.log("Fetched values from spreadsheet:", values);
-
-      for (let i = 0; i < values.length; i++) {
-        try {
-          const filePath = await handleImage(values[i][imageElement], values[i][nameElement]);
-          values[i][imageElement] = filePath;
-          const imageID = generateUniqueID();
-          values[i].push(imageID);
-        } catch (err) {
-          console.error("Error handling image for row:", i, err);
-          reject(err);
-        }
-      }
-
-      console.log("Processed values:", values);
-      resolve(values);
+      let jsonList = values.map((item) => ({
+        name: item[nameElement],
+        price: item[priceElement],
+        image_url: item[imageElement],
+        description: item[descriptionElement],
+      }));
+      resolve(jsonList);
     } catch (err) {
-      console.error("Error fetching data from Sheets:", err);
+      console.log(err);
       reject(err);
     }
   });
+};
+
+const handleNewEntry = async (entry) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const filePath = await handleImage(entry.image_url, entry.name);
+      const imageID = await generateUniqueID();
+      const addedElements = {
+        id: imageID,
+        image_url: filePath,
+        available: true,
+      };
+      const fullEntry = {
+        id: imageID,
+        image_url: filePath,
+        available: true,
+        name: entry.name,
+        description: entry.description,
+        price: entry.price,
+      };
+      resolve(fullEntry);
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
+  });
+};
+
+//difference between this and above is that this doesn't update images or ids
+const handleUpdatedEntry = async (entry) => {
+  const addedElements = { available: true };
+  const fullEntry = { ...addedElements, ...entry };
+  return fullEntry;
 };
 
 // Retrieve image path for a given file name
 const getImage = async (fileName) => {
   const pngName = `${fileName}.png`;
   const filePath = path.join(imagePath, pngName);
-  
+
   return new Promise((resolve, reject) => {
     try {
       if (!fs.existsSync(filePath)) {
@@ -147,6 +168,7 @@ const getImage = async (fileName) => {
 // Authenticate when the module is loaded
 authenticate().catch((err) => {
   console.error("Failed to authenticate Sheets Bot:", err);
+  throw new Error("Failed to authenticate Sheets Bot");
 });
 
 module.exports = {
@@ -156,4 +178,6 @@ module.exports = {
   handleImage,
   downloadFile,
   generateUniqueID,
+  handleNewEntry,
+  handleUpdatedEntry,
 };

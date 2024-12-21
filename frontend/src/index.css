@@ -33,29 +33,6 @@
   flex-wrap: wrap;
 }
 
-.overlay-container {
-  position: relative;
-  display: inline-block;
-}
-
-.overlay-container img {
-  display: block;
-  width: fit-content;
-  height: auto;
-}
-
-.overlay-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: grey;
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  opacity: 0.7;
-}
-
 form {
   width: 30vw;
   min-width: 500px;
@@ -203,13 +180,53 @@ a {
   display: block;
 }
 
-a:hover {
-  filter: contrast(120%);
-}
-
 #details-table {
   overflow-x: auto;
   width: 100%;
+}
+/* Center the entire container on the page */
+.overlap-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  background-color: #f0f0f0; /* Light gray background for contrast */
+}
+
+/* Image container to handle dynamic and fixed sizes */
+.overlapping-images {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  max-width: 100%;
+  max-height: 80vh;
+  overflow: hidden; /* Ensures no extra spacing is added */
+}
+
+/* Style for the bottom image */
+.bottom-image {
+  width: auto;
+  height: auto;
+  max-width: 100%; /* Ensures it doesn't overflow the container */
+  max-height: 80vh; /* Keeps it responsive within the viewport */
+  display: block;
+  z-index: 1; /* Place it below the top image */
+  opacity: 30%;
+}
+
+/* Style for the top image */
+.top-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Center the top image over the bottom image */
+  object-fit: contain; /* Ensure the image is properly scaled */
+  z-index: 2; /* Place it above the bottom image */
+  opacity: 0.8; /* Slight transparency for visual effect */
+  pointer-events: none; /* Prevent the top image from affecting interactions */
 }
 
 table {

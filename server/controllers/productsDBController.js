@@ -14,16 +14,14 @@ sqlite3.verbose();
 const createProductTable = (newdb) => {
   // String injected into the db.run method below
   const createSqlTable =
-    "CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT, available BOOLEAN)";
+    "CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT, available BOOLEAN DEFAULT true)";
   newdb.exec(createSqlTable, (err) => {
     if (err) {
       return err;
     }
-    try {
-      console.log("Products table was created");
-    } catch (err) {
-      return err;
-    }
+    console.log(
+      "Products table was linked or created if it didn't already exist"
+    );
   });
 };
 
@@ -50,7 +48,7 @@ let db = setUpDatabase();
 // **************** below are the functions using the database *****************
 
 // this is used to see if the database exists
-const checkEntryExists = (id) => {
+const checkEntryExistsFromID = (id) => {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM products WHERE id = ?", [id], (err, row) => {
       if (err) {
@@ -62,6 +60,67 @@ const checkEntryExists = (id) => {
       } else {
         resolve(false);
       }
+    });
+  });
+};
+
+const checkEntryExistsFromName = (name) => {
+  return new Promise((resolve, reject) => {
+    db.get("SELECT * FROM products WHERE name = ?", [name], (err, row) => {
+      if (err) {
+        reject(
+          new Error(`Failed to check if entry exists in database: ${err}`)
+        );
+      } else if (row) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+  });
+};
+
+// compares entry to the database and returns null if they are the same or if not in the db and the id if they are different
+const compareEntry = (entry) => {
+  return new Promise((resolve, reject) => {
+    db.get(
+      "SELECT * FROM products WHERE name = ?",
+      [entry.name],
+      (err, row) => {
+        if (err) {
+          reject(
+            new Error(`Failed to check if entry exists in database: ${err}`)
+          );
+        } else if (row) {
+          if (
+            !(
+              row.price === entry.price &&
+              row.description === entry.description
+            )
+          )
+            resolve(row.id);
+          else resolve(null);
+        } else {
+          resolve(null);
+        }
+      }
+    );
+  });
+};
+
+const removeElementsNotInList = async (nameList) => {
+  return new Promise((resolve, reject) => {
+    const placeholders = nameList.map(() => "?").join(",");
+    const sql = `DELETE FROM products WHERE name NOT IN (${placeholders})`;
+
+    // Execute the SQL query
+    db.run(sql, nameList, (err) => {
+      if (err) {
+        console.error(err.message);
+        reject(err);
+      }
+      console.log(`Rows deleted: ${this.changes}`);
+      resolve("success");
     });
   });
 };
@@ -85,14 +144,7 @@ const getEntries = async (limit) => {
       if (err) {
         reject(new Error(err)); // reject promise if there is an error
       } else {
-        jsonObject = await rows.map((row) => ({
-          id: row.id,
-          name: row.name,
-          price: row.price,
-          description: row.description,
-          image_url: row.image_url,
-        })); // this is a mapping function to create a json object
-        resolve(jsonObject);
+        resolve(rows);
       }
     });
   });
@@ -107,13 +159,7 @@ const getEntry = async (id) => {
         reject(err);
       }
       if (row) {
-        resolve({
-          id: row.id,
-          name: row.name,
-          price: row.price,
-          description: row.description,
-          image_url: row.image_url,
-        });
+        resolve(row);
       } else {
         console.log("The Id you are looking for couldn't be found");
         reject(new Error("The Id you are looking for couldn't be found"));
@@ -125,13 +171,14 @@ const getEntry = async (id) => {
 const addEntry = async (jsonElement) => {
   return new Promise((resolve, reject) => {
     db.run(
-      "INSERT INTO products (id, name, description, price, image_url) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO products (id, name, description, price, image_url, available) VALUES (?, ?, ?, ?, ?, ?)",
       [
         jsonElement.id,
         jsonElement.name,
         jsonElement.description,
         jsonElement.price,
         jsonElement.image_url,
+        jsonElement.available,
       ],
       (err) => {
         if (err) {
@@ -165,10 +212,9 @@ const deleteEntry = async (id) => {
   });
 };
 
-
 // this only works assuming something is being updated dont just call randomly?
 const updateEntry = async (jsonElement) => {
-  const id = parseInt(jsonElement.id);
+  const id = jsonElement.id;
   if (!id) {
     throw new Error("ID is required to update a product");
   }
@@ -187,10 +233,6 @@ const updateEntry = async (jsonElement) => {
   if (jsonElement.price !== undefined) {
     query += "price = ?, ";
     params.push(jsonElement.price);
-  }
-  if (jsonElement.image_url !== undefined) {
-    query += "image_url = ?, ";
-    params.push(jsonElement.image_url);
   }
   if (jsonElement.available !== undefined) {
     query += "available = ?, ";
@@ -255,11 +297,14 @@ const insertUpdateEntries = async (sheetsList) => {
 };
 
 module.exports = {
-  checkEntryExists,
+  checkEntryExistsFromID,
+  checkEntryExistsFromName,
+  compareEntry,
   getEntries,
   getEntry,
   addEntry,
   deleteEntry,
   updateEntry,
   insertUpdateEntries,
+  removeElementsNotInList,
 };

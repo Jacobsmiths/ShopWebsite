@@ -5,9 +5,16 @@ const {
   addEntry,
   deleteEntry,
   updateEntry,
-  insertUpdateEntries,
+  checkEntryExistsFromName,
+  compareEntry,
+  removeElementsNotInList,
 } = require("../controllers/productsDBController");
-const { getData, getImage } = require("../controllers/spreadsheetDBController");
+const {
+  getData,
+  getImage,
+  handleNewEntry,
+  handleUpdatedEntry,
+} = require("../controllers/spreadsheetDBController");
 const {
   createPaymentIntent,
   retrievePaymentIntent,
@@ -87,15 +94,29 @@ const updateProduct = async (req, res, next) => {
 };
 
 const fetchSheet = async (req, res, next) => {
-  const data = await getData();
-
-  insertUpdateEntries(data)
-    .then((result) => {
-      return res.status(200).json(result);
-    })
-    .catch((err) => {
-      next(err);
-    });
+  try {
+    const sheetElements = await getData();
+    let names = [];
+    for (element in sheetElements) {
+      names.push(sheetElements[element].name);
+      if (await checkEntryExistsFromName(sheetElements[element].name)) {
+        let comparison = await compareEntry(sheetElements[element]);
+        if (comparison != null) {
+          let temp = { ...sheetElements[element], ...{ id: comparison, available: true } };
+          await updateEntry(temp);
+        }
+      } else {
+        const newEntry = await handleNewEntry(sheetElements[element])
+        console.log(`New entry: ${newEntry.image_url}`)
+        await addEntry(newEntry);
+      }
+    }
+    await removeElementsNotInList(names);
+    res.status(200).json(JSON.stringify({ Success: true }));
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 };
 
 const fetchImage = async (req, res, next) => {
