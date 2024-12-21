@@ -24,14 +24,13 @@ const calculateOrderAmount = (items) => {
 
 const createPaymentIntent = async (req, res, next) => {
   const { items } = req.body;
-  // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
     amount: calculateOrderAmount(items) * 100,
     currency: 'usd',
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
     automatic_payment_methods: {
       enabled: true,
     },
+    metadata: { id: items.id },
   });
 
   res.send({
@@ -39,7 +38,6 @@ const createPaymentIntent = async (req, res, next) => {
   });
 };
 
-// Export the functions
 module.exports = {
   retrievePaymentIntent,
   createPaymentIntent,
