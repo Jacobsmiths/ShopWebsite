@@ -165,30 +165,52 @@ const deleteEntry = async (id) => {
   });
 };
 
+
+// this only works assuming something is being updated dont just call randomly?
 const updateEntry = async (jsonElement) => {
   const id = parseInt(jsonElement.id);
-  const query = `UPDATE products SET name = ?, description = ?, price = ?, image_url = ? WHERE id = ?`;
+  if (!id) {
+    throw new Error("ID is required to update a product");
+  }
+
+  let query = "UPDATE products SET ";
+  const params = [];
+
+  if (jsonElement.name !== undefined) {
+    query += "name = ?, ";
+    params.push(jsonElement.name);
+  }
+  if (jsonElement.description !== undefined) {
+    query += "description = ?, ";
+    params.push(jsonElement.description);
+  }
+  if (jsonElement.price !== undefined) {
+    query += "price = ?, ";
+    params.push(jsonElement.price);
+  }
+  if (jsonElement.image_url !== undefined) {
+    query += "image_url = ?, ";
+    params.push(jsonElement.image_url);
+  }
+  if (jsonElement.available !== undefined) {
+    query += "available = ?, ";
+    params.push(jsonElement.available);
+  }
+
+  // remove the last two items to ensure there is no random space and comma
+  query = query.slice(0, -2) + " WHERE id = ?";
+  params.push(id);
 
   return new Promise((resolve, reject) => {
-    db.run(
-      query,
-      [
-        jsonElement.name,
-        jsonElement.description,
-        jsonElement.price,
-        jsonElement.image_url,
-        jsonElement.id,
-      ],
-      (err) => {
-        if (err) {
-          reject(
-            new Error(`Updating product with id: ${id} was failure: ${err}`)
-          );
-        } else {
-          resolve(`Updating product with id: ${id} was a success`);
-        }
+    db.run(query, params, (err) => {
+      if (err) {
+        reject(
+          new Error(`Updating product with id: ${id} failed: ${err.message}`)
+        );
+      } else {
+        resolve(`Updating product with id: ${id} was a success`);
       }
-    );
+    });
   });
 };
 
@@ -232,7 +254,6 @@ const insertUpdateEntries = async (sheetsList) => {
   });
 };
 
-// Export the functions
 module.exports = {
   checkEntryExists,
   getEntries,

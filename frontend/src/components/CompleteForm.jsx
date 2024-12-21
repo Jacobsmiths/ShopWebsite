@@ -84,9 +84,10 @@ const STATUS_CONTENT_MAP = {
   },
 };
 
-export default function CompletePage({ payment_intentID }) {
+export default function CompletePage({ payment_intentID, setProductSold}) {
   const [status, setStatus] = useState("default");
   const [loading, setLoading] = useState(true); // Add loading state
+
 
   useEffect(() => {
     if (!payment_intentID) return; // Don't fetch if payment_intentID is not available
@@ -117,6 +118,10 @@ export default function CompletePage({ payment_intentID }) {
 
     fetchPaymentIntent();
   }, [payment_intentID]); // Trigger only if payment_intentID changes
+
+  useEffect(()=> {
+    
+  }, [status]);
 
   return (
     <div id="payment-status">

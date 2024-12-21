@@ -14,7 +14,6 @@ const CheckoutPage = ({ stripePromise }) => {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-
         const secretResponse = await fetch("/api/products/create-secret", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

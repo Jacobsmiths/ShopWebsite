@@ -8,7 +8,10 @@ const {
   insertUpdateEntries,
 } = require("../controllers/productsDBController");
 const { getData, getImage } = require("../controllers/spreadsheetDBController");
-const { createPaymentIntent, retrievePaymentIntent } = require("../controllers/paymentController");
+const {
+  createPaymentIntent,
+  retrievePaymentIntent,
+} = require("../controllers/paymentController");
 
 const router = express.Router();
 
@@ -70,8 +73,10 @@ const updateProduct = async (req, res, next) => {
     name: req.body.name,
     price: req.body.price,
     description: req.body.description,
-    stock: req.body.stock,
+    image_url: req.body.image_url,
+    available: req.body.available,
   };
+
   updateEntry(product)
     .then((result) => {
       return res.status(200).json(result);
@@ -104,12 +109,51 @@ const fetchImage = async (req, res, next) => {
   }
 };
 
+const onConfirm = async (req, res, next) => {
+  const event = req.body;
+  let recieve = false;
+  switch (event.type) {
+    case "payment_intent.succeeded":
+      const paymentIntent = event.data.object;
+      const id = paymentIntent.metadata.id;
+      try {
+        const update = await fetch("/", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: id, available: false }),
+        });
+        recieve = true;
+      } catch (err) {
+        console.log(`ther was an error updating the product to be unavailable`);
+        next(
+          new Error(
+            "there was an error chaning availability of product once bought"
+          )
+        );
+        recieve = false;
+      }
+      break;
+
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+      next(new Error(`Unhandled event type ${event.type}`));
+      recieve = false;
+      break;
+  }
+  res.json({ received: recieve });
+};
+
 router.post("/get-secret", retrievePaymentIntent);
 router.post("/create-secret", createPaymentIntent);
 router.get("/fetchsheet", fetchSheet);
 router.get("/gallery/:id", fetchImage);
 router.get("/:id", getProduct);
 router.get("/", getProducts);
+router.post(
+  "/payment-confirmed",
+  express.json({ type: "application/json" }),
+  onConfirm
+);
 router.post("/", addProduct);
 router.delete("/:id", deleteProduct);
 router.put("/", updateProduct);

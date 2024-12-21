@@ -18,7 +18,6 @@ const App = () => {
     "pk_test_51QWWzXP3msuX5JsQSplZGGjyhrOS45hW5DMNnmIlHfUri1nzUA4Jgx9a0SxMVtXRIHJT8ofwwjeyDuvjgaCMRPEk00oYLG2N4U"
   );
 
-
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<MainLayout />}>
@@ -26,11 +25,21 @@ const App = () => {
         <Route path="view/:id" element={<ViewPage />} loader={productLoader} />
         <Route
           path="checkout/:id"
-          element={<CheckoutPage stripePromise={stripePromise} loader={productLoader}/>}
+          element={
+            <CheckoutPage
+              stripePromise={stripePromise}
+              loader={productLoader}
+            />
+          }
         />
         <Route
           path="checkout-complete"
-          element={<CompletePage stripePromise={stripePromise} />}
+          element={
+            <CompletePage
+              stripePromise={stripePromise}
+              setProductSold={setProductSold}
+            />
+          }
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
