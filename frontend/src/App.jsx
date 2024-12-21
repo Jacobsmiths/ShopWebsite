@@ -13,11 +13,11 @@ import ViewPage from "./pages/ViewPage";
 import CompletePage from "./pages/CompletePage";
 import { loadStripe } from "@stripe/stripe-js";
 
-const App = () => {
-  const stripePromise = loadStripe(
-    "pk_test_51QWWzXP3msuX5JsQSplZGGjyhrOS45hW5DMNnmIlHfUri1nzUA4Jgx9a0SxMVtXRIHJT8ofwwjeyDuvjgaCMRPEk00oYLG2N4U"
-  );
+const stripePromise = loadStripe(
+  "pk_test_51QWWzXP3msuX5JsQSplZGGjyhrOS45hW5DMNnmIlHfUri1nzUA4Jgx9a0SxMVtXRIHJT8ofwwjeyDuvjgaCMRPEk00oYLG2N4U"
+);
 
+const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<MainLayout />}>
@@ -37,7 +37,6 @@ const App = () => {
           element={
             <CompletePage
               stripePromise={stripePromise}
-              setProductSold={setProductSold}
             />
           }
         />
