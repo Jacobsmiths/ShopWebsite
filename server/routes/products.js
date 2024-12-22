@@ -138,7 +138,9 @@ const onConfirm = async (req, res, next) => {
   switch (event.type) {
     case "checkout.session.completed":
       const checkoutSession = event.data.object;
-      const id = checkoutSession.metadata.purchasedIdList;
+      const id = checkoutSession.metadata.id;
+      console.log(id)
+      console.log(checkoutSession);
       try {
         await updateEntry({ id: id, available: false });
         recieve = true;
