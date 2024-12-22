@@ -140,6 +140,8 @@ const onConfirm = async (req, res, next) => {
     case "payment_intent.succeeded":
       const paymentIntent = event.data.object;
       const id = paymentIntent.metadata.purchasedIdList;
+      console.log(paymentIntent);
+      console.log(id);
       try {
         await updateEntry({ id: id, available: false });
         recieve = true;
@@ -153,14 +155,13 @@ const onConfirm = async (req, res, next) => {
         recieve = false;
       }
       break;
-
     default:
       console.log(`Unhandled event type ${event.type}`);
       next(new Error(`Unhandled event type ${event.type}`));
       recieve = false;
       break;
   }
-  res.json({ received: recieve });
+  res.status(200).json({ received: recieve });
 };
 
 router.post("/get-secret", retrievePaymentIntent);
