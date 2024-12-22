@@ -5,7 +5,7 @@ import ItemCard from "./ItemCard";
 const HomeListing = ({ product }) => {
   const { id, description, name, image_url, price, available } = product;
   const link = `/view/${id}`;
-  const soldOutUrl = "/src/assets/images/SoldOut.png";
+  const soldOutUrl = "../assets/images/SoldOut.png";
 
   return (
     <div>
