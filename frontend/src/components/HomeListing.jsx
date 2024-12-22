@@ -1,11 +1,12 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
 import ItemCard from "./ItemCard";
+import SoldOutImage from "../assets/images/SoldOut.png";
+
 
 const HomeListing = ({ product }) => {
   const { id, description, name, image_url, price, available } = product;
   const link = `/view/${id}`;
-  const soldOutUrl = "../assets/images/SoldOut.png";
 
   return (
     <div>
@@ -34,7 +35,7 @@ const HomeListing = ({ product }) => {
               <body className="overlap-container">
                 <div class="overlapping-images  w-full h-auto">
                   <img src={image_url} alt={name} class="bottom-image" />
-                  <img src={soldOutUrl} alt="Soldout.png" class="top-image" />
+                  <img src={SoldOutImage} alt="Soldout.png" class="top-image" />
                 </div>
               </body>
               <div className="text-gray-500 text-right px-2 font-bold">
