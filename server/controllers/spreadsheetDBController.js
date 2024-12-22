@@ -166,9 +166,21 @@ const getImage = async (fileName) => {
   });
 };
 
+const defineAddress = (obj) => {
+  let result = "";
+
+  for (const key in obj) {
+    if (obj[key] != null) {
+      result += `${obj[key]} `;
+    }
+  }
+  return result;
+};
+
 const appendToSheet = async ({ id, address, email }) => {
   console.log("this is the values");
-  console.log(id, JSON.stringify(address), email);
+  const usableAddress = defineAddress(address);
+  console.log(id, usableAddress, email);
 
   try {
     await sheets.spreadsheets.values.append({
@@ -176,7 +188,7 @@ const appendToSheet = async ({ id, address, email }) => {
       range: rangeVar2,
       valueInputOption: "RAW",
       resource: {
-        values: [[id, JSON.stringify(address), email || "none"]],
+        values: [[id, usableAddress, email || ""]],
       },
     });
     console.log("Data successfully appended!");

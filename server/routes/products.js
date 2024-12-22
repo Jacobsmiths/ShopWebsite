@@ -139,13 +139,14 @@ const onConfirm = async (req, res, next) => {
   switch (event.type) {
     case "checkout.session.completed":
       const checkoutSession = event.data.object;
-      console.log(checkoutSession);
       const id = checkoutSession.metadata.id;
+      const obj = await getEntry(id);
+      const name = obj.name;
       const address = checkoutSession.shipping_details.address;
       const email = checkoutSession.customer_details.email;
       try {
         await updateEntry({ id: id, available: false });
-        await appendToSheet({id: id, address: address, email: email});
+        await appendToSheet({id: name, address: address, email: email});
         recieve = true;
       } catch (err) {
         console.log(`ther was an error updating the product to be unavailable`);
