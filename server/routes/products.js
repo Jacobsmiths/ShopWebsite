@@ -139,15 +139,9 @@ const onConfirm = async (req, res, next) => {
   switch (event.type) {
     case "payment_intent.succeeded":
       const paymentIntent = event.data.object;
-      const ids = paymentIntent.metadata.purchasedIdList;
+      const id = paymentIntent.metadata.purchasedIdList;
       try {
-        ids.forEach(async (id) => {
-          await fetch("/", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: id, available: false }),
-          });
-        });
+        await updateEntry({ id: id, available: false });
         recieve = true;
       } catch (err) {
         console.log(`ther was an error updating the product to be unavailable`);
@@ -175,10 +169,7 @@ router.get("/fetchsheet", fetchSheet);
 router.get("/gallery/:id", fetchImage);
 router.get("/:id", getProduct);
 router.get("/", getProducts);
-router.post(
-  "/payment-confirmed",
-  onConfirm
-);
+router.post("/payment-confirmed", onConfirm);
 router.post("/", addProduct);
 router.delete("/:id", deleteProduct);
 router.put("/", updateProduct);
