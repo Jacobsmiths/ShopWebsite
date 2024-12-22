@@ -136,11 +136,9 @@ const onConfirm = async (req, res, next) => {
   const event = req.body;
   let recieve = false;
   switch (event.type) {
-    case "payment_intent.succeeded":
+    case "checkout.session.completed":
       const checkoutSession = event.data.object;
       const id = checkoutSession.metadata.purchasedIdList;
-      console.log(checkoutSession);
-      console.log(id);
       try {
         await updateEntry({ id: id, available: false });
         recieve = true;
