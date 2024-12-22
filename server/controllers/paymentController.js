@@ -21,7 +21,46 @@ const retrieveCheckoutSession = async (req, res, next) => {
     product: `${product.id}`,
   });
   const session = await stripe.checkout.sessions.create({
+    billing_address_collection: "required",
     ui_mode: "embedded",
+    automatic_tax: {
+      enabled: true,
+    },
+    shipping_address_collection: {
+      allowed_countries: ["US"],
+    },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 0,
+            currency: 'usd',
+          },
+          display_name: 'Pickup',
+        },
+      },
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 1500,
+            currency: 'usd',
+          },
+          display_name: 'Regular Shipping',
+          delivery_estimate: {
+            minimum: {
+              unit: 'business_day',
+              value: 10,
+            },
+            maximum: {
+              unit: 'business_day',
+              value: 30,
+            },
+          },
+        },
+      },
+    ],
     line_items: [
       {
         price: price.id,
