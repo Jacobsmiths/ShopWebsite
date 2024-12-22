@@ -13,11 +13,10 @@ const {
   getData,
   getImage,
   handleNewEntry,
-  handleUpdatedEntry,
 } = require("../controllers/spreadsheetDBController");
 const {
-  createPaymentIntent,
-  retrievePaymentIntent,
+  retrieveSessionStatus,
+  retrieveCheckoutSession,
 } = require("../controllers/paymentController");
 
 const router = express.Router();
@@ -138,9 +137,9 @@ const onConfirm = async (req, res, next) => {
   let recieve = false;
   switch (event.type) {
     case "payment_intent.succeeded":
-      const paymentIntent = event.data.object;
-      const id = paymentIntent.metadata.purchasedIdList;
-      console.log(paymentIntent);
+      const checkoutSession = event.data.object;
+      const id = checkoutSession.metadata.purchasedIdList;
+      console.log(checkoutSession);
       console.log(id);
       try {
         await updateEntry({ id: id, available: false });
@@ -164,8 +163,8 @@ const onConfirm = async (req, res, next) => {
   res.status(200).json({ received: recieve });
 };
 
-router.post("/get-secret", retrievePaymentIntent);
-router.post("/create-secret", createPaymentIntent);
+router.post("/create-checkout-session", retrieveCheckoutSession);
+router.post("/session-status", retrieveSessionStatus);
 router.get("/fetchsheet", fetchSheet);
 router.get("/gallery/:id", fetchImage);
 router.get("/:id", getProduct);

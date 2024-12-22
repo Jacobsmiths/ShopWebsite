@@ -1,13 +1,13 @@
 import React from "react";
-import MainLayout from "./layouts/MainLayout";
-import HomePage, { productLoader } from "./pages/HomePage";
-import NotFoundPage from "./pages/NotFoundPage";
 import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import HomePage, { productLoader } from "./pages/HomePage";
+import NotFoundPage from "./pages/NotFoundPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ViewPage from "./pages/ViewPage";
 import CompletePage from "./pages/CompletePage";
@@ -28,17 +28,12 @@ const App = () => {
           element={
             <CheckoutPage
               stripePromise={stripePromise}
-              loader={productLoader}
             />
           }
         />
         <Route
-          path="checkout-complete"
-          element={
-            <CompletePage
-              stripePromise={stripePromise}
-            />
-          }
+          path="complete"
+          element={<CompletePage />}
         />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
