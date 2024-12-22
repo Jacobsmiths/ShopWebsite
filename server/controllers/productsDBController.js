@@ -94,8 +94,7 @@ const compareEntry = (entry) => {
         } else if (row) {
           if (
             !(
-              row.price === entry.price &&
-              row.description === entry.description
+              row.price === entry.price && row.description === entry.description
             )
           )
             resolve(row.id);
@@ -159,6 +158,7 @@ const getEntry = async (id) => {
         reject(err);
       }
       if (row) {
+        console.log(row);
         resolve(row);
       } else {
         console.log("The Id you are looking for couldn't be found");

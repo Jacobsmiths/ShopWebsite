@@ -102,12 +102,15 @@ const fetchSheet = async (req, res, next) => {
       if (await checkEntryExistsFromName(sheetElements[element].name)) {
         let comparison = await compareEntry(sheetElements[element]);
         if (comparison != null) {
-          let temp = { ...sheetElements[element], ...{ id: comparison, available: true } };
+          let temp = {
+            ...sheetElements[element],
+            ...{ id: comparison, available: true },
+          };
           await updateEntry(temp);
         }
       } else {
-        const newEntry = await handleNewEntry(sheetElements[element])
-        console.log(`New entry: ${newEntry.image_url}`)
+        const newEntry = await handleNewEntry(sheetElements[element]);
+        console.log(`New entry: ${newEntry.image_url}`);
         await addEntry(newEntry);
       }
     }
@@ -136,12 +139,14 @@ const onConfirm = async (req, res, next) => {
   switch (event.type) {
     case "payment_intent.succeeded":
       const paymentIntent = event.data.object;
-      const id = paymentIntent.metadata.id;
+      const ids = paymentIntent.metadata.purchasedIdList;
       try {
-        const update = await fetch("/", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: id, available: false }),
+        ids.forEach(async (id) => {
+          await fetch("/", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id, available: false }),
+          });
         });
         recieve = true;
       } catch (err) {

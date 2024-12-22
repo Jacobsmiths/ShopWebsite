@@ -7,13 +7,18 @@ import CheckoutForm from "../components/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 
 const CheckoutPage = ({ stripePromise }) => {
-  const product = useLoaderData();
+  const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [clientSecret, setSecret] = useState(null);
+  const [entry, setEntry] = useState(undefined);
 
   useEffect(() => {
     const fetchEntry = async () => {
       try {
+        const res = await fetch(`/api/products/${id}`);
+        const product = await res.json();
+        setEntry(product);
+
         const secretResponse = await fetch("/api/products/create-secret", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -28,7 +33,7 @@ const CheckoutPage = ({ stripePromise }) => {
       }
     };
     fetchEntry();
-  }, []);
+  }, [id]);
 
   const appearance = { theme: "stripe" };
   const loader = "auto";
@@ -48,8 +53,8 @@ const CheckoutPage = ({ stripePromise }) => {
             stripe={stripePromise}
           >
             <div>
-              <CheckoutListing product={product} key={product.id} />
-              <CheckoutForm  />
+              <CheckoutListing product={entry} key={entry.id} />
+              <CheckoutForm />
             </div>
           </Elements>
         )
