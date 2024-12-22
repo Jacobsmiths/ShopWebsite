@@ -142,7 +142,7 @@ const onConfirm = async (req, res, next) => {
       console.log(checkoutSession);
       const id = checkoutSession.metadata.id;
       const address = checkoutSession.shipping_details.address;
-      const email = checkoutSession.customer_email;
+      const email = checkoutSession.customer_details.email;
       try {
         await updateEntry({ id: id, available: false });
         await appendToSheet({id: id, address: address, email: email});

@@ -25,7 +25,7 @@ const imageElement = 3;
 const sheets = google.sheets("v4");
 const auth = new google.auth.GoogleAuth({
   keyFile: KEY_FILE_PATH,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"], // Read-only access to Sheets
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"], // Read-only access to Sheets
 });
 
 // Authenticate and set global authenticator client for API requests
@@ -166,7 +166,7 @@ const getImage = async (fileName) => {
   });
 };
 
-const appendToSheet = async ({id, address, email}) => {
+const appendToSheet = async ({ id, address, email }) => {
   console.log("this is the values");
   console.log(id, JSON.stringify(address), email);
 
@@ -176,7 +176,7 @@ const appendToSheet = async ({id, address, email}) => {
       range: rangeVar2,
       valueInputOption: "RAW",
       resource: {
-        values:[[id, JSON.stringify(address), email||"none"]]
+        values: [[id, JSON.stringify(address), email || "none"]],
       },
     });
     console.log("Data successfully appended!");
@@ -201,5 +201,5 @@ module.exports = {
   generateUniqueID,
   handleNewEntry,
   handleUpdatedEntry,
-  appendToSheet
+  appendToSheet,
 };
