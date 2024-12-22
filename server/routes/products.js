@@ -13,6 +13,7 @@ const {
   getData,
   getImage,
   handleNewEntry,
+  appendToSheet,
 } = require("../controllers/spreadsheetDBController");
 const {
   retrieveSessionStatus,
@@ -138,9 +139,11 @@ const onConfirm = async (req, res, next) => {
   switch (event.type) {
     case "checkout.session.completed":
       const checkoutSession = event.data.object;
-      const id = checkoutSession.metadata.id;;
+      const id = checkoutSession.metadata.id;
       try {
         await updateEntry({ id: id, available: false });
+        console.log(checkoutSession.shipping_details);
+        await appendToSheet({id: id, address: checkoutSession.shipping_details});
         recieve = true;
       } catch (err) {
         console.log(`ther was an error updating the product to be unavailable`);
@@ -160,6 +163,7 @@ const onConfirm = async (req, res, next) => {
   }
   res.status(200).json({ received: recieve });
 };
+
 
 router.post("/create-checkout-session", retrieveCheckoutSession);
 router.post("/session-status", retrieveSessionStatus);

@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
 const rangeVar = "Data!C2:F30";
+const rangeVar2 = "Shipping!A1";
 const imagesFolder = path.join(
   path.dirname(__dirname),
   "../frontend/public/images"
@@ -165,6 +166,25 @@ const getImage = async (fileName) => {
   });
 };
 
+const appendToSheet = async ({values}) => {
+  const id = values.id;
+  const address = values.address;
+  try {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREAD_SHEET_ID,
+      range: rangeVar2,
+      valueInputOption: "RAW",
+      resource: {
+        values:[[id, address]]
+      },
+    });
+    console.log("Data successfully appended!");
+  } catch (err) {
+    console.error("Error appending data:", err);
+    throw err;
+  }
+};
+
 // Authenticate when the module is loaded
 authenticate().catch((err) => {
   console.error("Failed to authenticate Sheets Bot:", err);
@@ -180,4 +200,5 @@ module.exports = {
   generateUniqueID,
   handleNewEntry,
   handleUpdatedEntry,
+  appendToSheet
 };
