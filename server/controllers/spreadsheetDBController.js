@@ -166,16 +166,17 @@ const getImage = async (fileName) => {
   });
 };
 
-const appendToSheet = async ({values}) => {
-  const id = values.id;
-  const address = values.address;
+const appendToSheet = async ({id, address, email}) => {
+  console.log("this is the values");
+  console.log(id, JSON.stringify(address), email);
+
   try {
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREAD_SHEET_ID,
       range: rangeVar2,
       valueInputOption: "RAW",
       resource: {
-        values:[[id, address]]
+        values:[[id, JSON.stringify(address), email||"none"]]
       },
     });
     console.log("Data successfully appended!");
