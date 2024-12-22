@@ -32,32 +32,32 @@ const retrieveCheckoutSession = async (req, res, next) => {
     shipping_options: [
       {
         shipping_rate_data: {
-          type: 'fixed_amount',
+          type: "fixed_amount",
           fixed_amount: {
-            amount: 0,
-            currency: 'usd',
+            amount: 1500,
+            currency: "usd",
           },
-          display_name: 'Pickup',
+          display_name: "Regular Shipping",
+          delivery_estimate: {
+            minimum: {
+              unit: "business_day",
+              value: 10,
+            },
+            maximum: {
+              unit: "business_day",
+              value: 30,
+            },
+          },
         },
       },
       {
         shipping_rate_data: {
-          type: 'fixed_amount',
+          type: "fixed_amount",
           fixed_amount: {
-            amount: 1500,
-            currency: 'usd',
+            amount: 0,
+            currency: "usd",
           },
-          display_name: 'Regular Shipping',
-          delivery_estimate: {
-            minimum: {
-              unit: 'business_day',
-              value: 10,
-            },
-            maximum: {
-              unit: 'business_day',
-              value: 30,
-            },
-          },
+          display_name: "Pickup",
         },
       },
     ],

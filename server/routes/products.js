@@ -139,12 +139,12 @@ const onConfirm = async (req, res, next) => {
   switch (event.type) {
     case "checkout.session.completed":
       const checkoutSession = event.data.object;
+      console.log(checkoutSession);
       const id = checkoutSession.metadata.id;
       const address = checkoutSession.shipping_details.address;
       const email = checkoutSession.customer_email;
       try {
         await updateEntry({ id: id, available: false });
-        console.log(checkoutSession.shipping_details);
         await appendToSheet({id: id, address: address, email: email});
         recieve = true;
       } catch (err) {
