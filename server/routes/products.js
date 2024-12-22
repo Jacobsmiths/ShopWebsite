@@ -177,7 +177,6 @@ router.get("/:id", getProduct);
 router.get("/", getProducts);
 router.post(
   "/payment-confirmed",
-  express.json({ type: "application/json" }),
   onConfirm
 );
 router.post("/", addProduct);
