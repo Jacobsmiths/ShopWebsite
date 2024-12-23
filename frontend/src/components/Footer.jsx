@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Left: Website Title and Logo */}
 
           {/* Replace the src with your logo URL */}
-          <div className="">
+          <div className="justify-left">
             <img src={logo} alt="Website Logo" className="h-10 w-auto" />
             <h1 className="text-lg text-gray-200">The Waiting Market</h1>
           </div>

@@ -188,7 +188,7 @@ const appendToSheet = async ({ id, address, email }) => {
       range: rangeVar2,
       valueInputOption: "RAW",
       resource: {
-        values: [[id, usableAddress, email || ""]],
+        values: [[id, usableAddress, email]],
       },
     });
     console.log("Data successfully appended!");
