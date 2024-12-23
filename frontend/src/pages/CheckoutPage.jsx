@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import CheckoutForm from "../components/CheckoutForm";
 import Spinner from "../components/Spinner";
-import ItemCard from "../components/ItemCard";
 
 const CheckoutPage = ({ stripePromise }) => {
   const { id } = useParams();
@@ -42,13 +41,13 @@ const CheckoutPage = ({ stripePromise }) => {
           <p className="text-center font-bold text-3xl">Checkout</p>
           <div className="container grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6">
             {/* Left: Checkout Form (3/4ths of the width) */}
-            <div className="bg-white shadow-md rounded-lg p-6">
+            <div className="bg-white rounded-lg p-6">
               <CheckoutForm product={entry} stripePromise={stripePromise} />
             </div>
 
             {/* Right: Image and Price (Shrink-wrapped to fit content) */}
             <div
-              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start"
+              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start mr-4"
               style={{ height: "min-content"}}
             >
               {/* Image in smaller form, full width */}
