@@ -27,16 +27,16 @@ export default function CompletePage({ sessionId }) {
             Payment Successful
           </div>
         );
-      case "failed":
+      case "expired":
         return (
           <div className="flex items-center justify-center text-red-500 bg-red-100 p-3 rounded-md text-sm mb-4">
             <span role="img" aria-label="x" className="mr-2">
               ❌
             </span>
-            Payment Failed
+            Checkout Session Expired, Please Retry
           </div>
         );
-      case "pending":
+      default:
         return (
           <div className="flex items-center justify-center text-yellow-500 bg-yellow-100 p-3 rounded-md text-sm mb-4">
             <span role="img" aria-label="warning" className="mr-2">
@@ -45,8 +45,6 @@ export default function CompletePage({ sessionId }) {
             Payment Pending
           </div>
         );
-      default:
-        return null;
     }
   };
 
@@ -62,8 +60,11 @@ export default function CompletePage({ sessionId }) {
           We appreciate your business! A confirmation email will be sent to{" "}
           <span className="font-bold underline">{customerEmail}</span>. If you
           have any questions, please email{" "}
-          <a href="mailto:orders@example.com" className="text-blue-500 inline">
-            orders@example.com
+          <a
+            href="mailto:emersonsartgallery@gmail.com"
+            className="text-blue-500 inline"
+          >
+            emersonsartgallery@gmail.com
           </a>
         </p>
       )}
