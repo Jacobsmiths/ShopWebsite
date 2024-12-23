@@ -14,7 +14,7 @@ import CompletePage from "./pages/CompletePage";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(
-  "pk_test_51QWWzXP3msuX5JsQSplZGGjyhrOS45hW5DMNnmIlHfUri1nzUA4Jgx9a0SxMVtXRIHJT8ofwwjeyDuvjgaCMRPEk00oYLG2N4U"
+  "pk_live_51QWWzXP3msuX5JsQPRRf6wzJDMKVNlx840aKwdfjEVoEAahRqT0ilm0EbCWHyqoObBzAPSnK1ArNdibJMUN459SS00zAaShFWw"
 );
 
 const App = () => {
