@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import HomeLisiting from "./HomeListing";
 import Spinner from "./Spinner";
 import Masonry from "react-masonry-css";
-import imagesLoaded from "imagesloaded";
 
 const ProductListings = () => {
   const [products, setProducts] = useState([]);
@@ -31,16 +30,6 @@ const ProductListings = () => {
     };
     fetchProducts();
   }, []);
-
-  useEffect(() => {
-    const grid = document.querySelector(".gallery");
-    if (grid) {
-      imagesLoaded(grid, () => {
-        // Trigger a layout update after images are loaded
-        grid.classList.add("loaded");
-      });
-    }
-  }, [products]);
 
   return (
     <section>

@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require("uuid");
 // Define a few constant global variables and paths to key information
 const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
-const rangeVar = "Data!C2:F30";
+const rangeVar = "Data!C2:G50";
 const rangeVar2 = "Shipping!A1";
 const imagesFolder = path.join(
   path.dirname(__dirname),
@@ -20,6 +20,7 @@ const nameElement = 0;
 const priceElement = 1;
 const descriptionElement = 2;
 const imageElement = 3;
+const dimensionElement = 4;
 
 // Initialize Sheets API client
 const sheets = google.sheets("v4");
@@ -60,12 +61,12 @@ const downloadFile = async (url, fileName) => {
       if (!response.ok) {
         reject(new Error(`Failed to fetch: ${response.statusText}`));
       }
-
-      const savePath = path.join(imagesFolder, `./${fileName}.png`);
+      
+      const savePath = path.join(imagesFolder, `./${fileName.replace(/ /g, "-")}.png`);
       const fileStream = await fs.createWriteStream(savePath);
       await response.body.pipe(fileStream);
 
-      const stuffPath = path.join(imagePath, `${fileName}.png`);
+      const stuffPath = path.join(imagePath, `${fileName.replace(/ /g, "-")}.png`);
       resolve(stuffPath);
     } catch (err) {
       console.error("Error downloading file:", err);
@@ -106,6 +107,7 @@ const getData = async () => {
         price: item[priceElement],
         image_url: item[imageElement],
         description: item[descriptionElement],
+        dimension: item[dimensionElement]
       }));
       resolve(jsonList);
     } catch (err) {
@@ -115,6 +117,7 @@ const getData = async () => {
   });
 };
 
+// this is given the data from the sheets and handles making new id and other stuff
 const handleNewEntry = async (entry) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -132,6 +135,7 @@ const handleNewEntry = async (entry) => {
         name: entry.name,
         description: entry.description,
         price: entry.price,
+        dimension: entry.dimension
       };
       resolve(fullEntry);
     } catch (err) {

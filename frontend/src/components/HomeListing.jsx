@@ -19,7 +19,7 @@ const HomeListing = ({ product }) => {
                 <h3 className="text-xl font-bold">{name}</h3>
                 <img src={image_url} alt={name} className="w-full h-auto" />
                 <div className="text-gray-500 text-right px-2">
-                  ${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  {price}
                 </div>
               </>
             }

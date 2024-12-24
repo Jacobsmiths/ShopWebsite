@@ -3,7 +3,7 @@ import { NavLink, Link } from "react-router-dom";
 import ItemCard from "./ItemCard";
 
 const ViewListing = ({ product }) => {
-  const { id, description, name, image_url, price } = product;
+  const { id, description, name, image_url, price, dimension } = product;
   const checkoutUrl = `https://thewaitingmarket.me/checkout/${id}`;
 
   return (
@@ -24,8 +24,9 @@ const ViewListing = ({ product }) => {
                 {/* Title and Price */}
                 <h1 className="text-xl font-bold mb-2">{name}</h1>
                 <p className="text-xl font-medium text-gray-600 mb-3">
-                  ${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  {price}
                 </p>
+                <p className="text-gray-800 mb-6">{dimension}</p>
 
                 {/* Description */}
                 <p className="text-gray-800 mb-6">{description}</p>

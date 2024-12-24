@@ -14,7 +14,7 @@ sqlite3.verbose();
 const createProductTable = (newdb) => {
   // String injected into the db.run method below
   const createSqlTable =
-    "CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT, available BOOLEAN DEFAULT true)";
+    "CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, name TEXT NOT NULL,description TEXT, price REAL NOT NULL, image_url TEXT, available BOOLEAN DEFAULT true, dimension TEXT)";
   newdb.exec(createSqlTable, (err) => {
     if (err) {
       return err;
@@ -171,7 +171,7 @@ const getEntry = async (id) => {
 const addEntry = async (jsonElement) => {
   return new Promise((resolve, reject) => {
     db.run(
-      "INSERT INTO products (id, name, description, price, image_url, available) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO products (id, name, description, price, image_url, available, dimension) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
         jsonElement.id,
         jsonElement.name,
@@ -179,6 +179,7 @@ const addEntry = async (jsonElement) => {
         jsonElement.price,
         jsonElement.image_url,
         jsonElement.available,
+        jsonElement.dimension,
       ],
       (err) => {
         if (err) {
@@ -238,6 +239,10 @@ const updateEntry = async (jsonElement) => {
     query += "available = ?, ";
     params.push(jsonElement.available);
   }
+  if (jsonElement.dimension !== undefined) {
+    query += "dimension = ?, ";
+    params.push(jsonElement.dimension);
+  }
 
   // remove the last two items to ensure there is no random space and comma
   query = query.slice(0, -2) + " WHERE id = ?";
@@ -256,6 +261,7 @@ const updateEntry = async (jsonElement) => {
   });
 };
 
+// deprecated I dont think I use this 
 const insertUpdateEntries = async (sheetsList) => {
   db.serialize(() => {
     try {
@@ -264,7 +270,7 @@ const insertUpdateEntries = async (sheetsList) => {
       db.run("DELETE FROM products");
 
       const stmt = db.prepare(
-        "INSERT INTO products (id, name, price, description, image_url) VALUES (?, ?, ?, ?, ?)"
+        "INSERT INTO products (id, name, price, description, image_url, dimension) VALUES (?, ?, ?, ?, ?, ?)"
       );
 
       for (const product of sheetsList) {

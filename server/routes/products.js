@@ -98,7 +98,9 @@ const fetchSheet = async (req, res, next) => {
     const sheetElements = await getData();
     let names = [];
     for (element in sheetElements) {
+      
       names.push(sheetElements[element].name);
+
       if (await checkEntryExistsFromName(sheetElements[element].name)) {
         let comparison = await compareEntry(sheetElements[element]);
         if (comparison != null) {

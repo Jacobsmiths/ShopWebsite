@@ -64,7 +64,7 @@ const CheckoutPage = ({ stripePromise }) => {
               {/* Price */}
               <div className="flex justify-between text-lg font-semibold">
                 <p>Price:</p>
-                <p className="text-gray-800">${entry.price}</p>
+                <p className="text-gray-800">{entry.price}</p>
               </div>
             </div>
           </div>

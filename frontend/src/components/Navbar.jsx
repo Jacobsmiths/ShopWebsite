@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "../assets/images/logo.jpg";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -20,10 +20,16 @@ const Navbar = () => {
               <div className="flex space-x-2"></div>
             </div>
           </div>
-          <div className="text-right px-5">
-            <NavLink to="/about" className="NavLink">
+          <div className="text-right px-5 flex">
+            <Link to="/" className="NavLink">
+              Home
+            </Link>
+            <Link to="/about" className="NavLink">
               About
-            </NavLink>
+            </Link>
+            <Link to="/contact" className="NavLink">
+              Contact Us
+            </Link>
           </div>
         </div>
       </div>

@@ -21,6 +21,23 @@
   }
 }
 
+.AboutEmiPortrait {
+  width: 33%;
+}
+
+.AboutJacobPortrait {
+  width: 66%;
+}
+
+.AboutText {
+  font-size: medium;
+  width:auto;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+
+
 .grid-column {
   padding: 1rem;
   padding: 1rem;

@@ -11,6 +11,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ViewPage from "./pages/ViewPage";
 import CompletePage from "./pages/CompletePage";
+import ContactPage from "./pages/ContactPage";
+import AboutPage from "./pages/AboutPage";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(
@@ -25,16 +27,11 @@ const App = () => {
         <Route path="view/:id" element={<ViewPage />} loader={productLoader} />
         <Route
           path="checkout/:id"
-          element={
-            <CheckoutPage
-              stripePromise={stripePromise}
-            />
-          }
+          element={<CheckoutPage stripePromise={stripePromise} />}
         />
-        <Route
-          path="complete"
-          element={<CompletePage />}
-        />
+        <Route path="complete" element={<CompletePage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="contact" element={<ContactPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     )
