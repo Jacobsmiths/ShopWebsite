@@ -63,7 +63,7 @@ const downloadFile = async (url, fileName) => {
       }
 
       const fixedFileName = fileName.replace(/ /g, "-") + ".png";
-      const savePath = path.join(imagesFolder, `./${fixedFileName}`);
+      const savePath = path.join(imagesFolder, `${fixedFileName}`);
       console.log(savePath);
       const fileStream = await fs.createWriteStream(savePath);
       await response.body.pipe(fileStream);
@@ -151,7 +151,10 @@ const handleUpdatedEntry = async (entry) => {
 
 // Retrieve image path for a given file name
 const getImage = async (fileName) => {
-  const filePath = path.join(imagesFolder, fileName);
+  const filePath = path.join(
+    path.join(path.dirname(__dirname), "../frontend/public/"),
+    fileName
+  );
 
   return new Promise((resolve, reject) => {
     try {
