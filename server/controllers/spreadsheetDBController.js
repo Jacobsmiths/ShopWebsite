@@ -62,14 +62,12 @@ const downloadFile = async (url, fileName) => {
         reject(new Error(`Failed to fetch: ${response.statusText}`));
       }
 
-      const savePath = path.join(
-        imagesFolder,
-        `./${fileName.replace(/ /g, "-")}.png`
-      );
+      const fixedFileName = fileName.replace(/ /g, "-") + ".png";
+      const savePath = path.join(imagesFolder, `./${fixedFileName}`);
       const fileStream = await fs.createWriteStream(savePath);
       await response.body.pipe(fileStream);
 
-      const stuffPath = path.join("/", `${fileName.replace(/ /g, "-")}.png`);
+      const stuffPath = path.join("/", `${fixedFileName}`);
       resolve(stuffPath);
     } catch (err) {
       console.error("Error downloading file:", err);
