@@ -64,10 +64,11 @@ const downloadFile = async (url, fileName) => {
 
       const fixedFileName = fileName.replace(/ /g, "-") + ".png";
       const savePath = path.join(imagesFolder, `./${fixedFileName}`);
+      console.log(savePath);
       const fileStream = await fs.createWriteStream(savePath);
       await response.body.pipe(fileStream);
-
       const stuffPath = path.join(imagePath, `${fixedFileName}`);
+      console.log(stuffPath);
       resolve(stuffPath);
     } catch (err) {
       console.error("Error downloading file:", err);
