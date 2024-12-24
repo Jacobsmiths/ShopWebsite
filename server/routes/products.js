@@ -99,20 +99,21 @@ const fetchSheet = async (req, res, next) => {
     let names = [];
     for (element in sheetElements) {
       names.push(sheetElements[element].name);
-
-      if (await checkEntryExistsFromName(sheetElements[element].name)) {
-        let comparison = await compareEntry(sheetElements[element]);
-        if (comparison != null) {
-          let temp = {
-            ...sheetElements[element],
-            ...{ id: comparison, available: true },
-          };
-          await updateEntry(temp);
+      if (sheetElements[element] != null) {
+        if (await checkEntryExistsFromName(sheetElements[element].name)) {
+          let comparison = await compareEntry(sheetElements[element]);
+          if (comparison != null) {
+            let temp = {
+              ...sheetElements[element],
+              ...{ id: comparison, available: true },
+            };
+            await updateEntry(temp);
+          }
+        } else {
+          const newEntry = await handleNewEntry(sheetElements[element]);
+          console.log(`New entry: ${newEntry.image_url}`);
+          await addEntry(newEntry);
         }
-      } else {
-        const newEntry = await handleNewEntry(sheetElements[element]);
-        console.log(`New entry: ${newEntry.image_url}`);
-        await addEntry(newEntry);
       }
     }
     await removeElementsNotInList(names);
