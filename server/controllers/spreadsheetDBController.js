@@ -67,7 +67,7 @@ const downloadFile = async (url, fileName) => {
       const fileStream = await fs.createWriteStream(savePath);
       await response.body.pipe(fileStream);
 
-      const stuffPath = path.join("/", `${fixedFileName}`);
+      const stuffPath = path.join(imagePath, `${fixedFileName}`);
       resolve(stuffPath);
     } catch (err) {
       console.error("Error downloading file:", err);
