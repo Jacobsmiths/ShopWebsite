@@ -70,6 +70,7 @@ const downloadFile = async (url, fileName) => {
       const stuffPath = path.join("/", `${fixedFileName}`);
       resolve(stuffPath);
     } catch (err) {
+      
       console.error("Error downloading file:", err);
       reject(`Error fetching the file: ${err}`);
     }
