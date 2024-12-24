@@ -61,12 +61,15 @@ const downloadFile = async (url, fileName) => {
       if (!response.ok) {
         reject(new Error(`Failed to fetch: ${response.statusText}`));
       }
-      
-      const savePath = path.join(imagesFolder, `./${fileName.replace(/ /g, "-")}.png`);
+
+      const savePath = path.join(
+        imagesFolder,
+        `./${fileName.replace(/ /g, "-")}.png`
+      );
       const fileStream = await fs.createWriteStream(savePath);
       await response.body.pipe(fileStream);
 
-      const stuffPath = path.join(imagePath, `${fileName.replace(/ /g, "-")}.png`);
+      const stuffPath = path.join("/", `${fileName.replace(/ /g, "-")}.png`);
       resolve(stuffPath);
     } catch (err) {
       console.error("Error downloading file:", err);
@@ -107,7 +110,7 @@ const getData = async () => {
         price: item[priceElement],
         image_url: item[imageElement],
         description: item[descriptionElement],
-        dimension: item[dimensionElement]
+        dimension: item[dimensionElement],
       }));
       resolve(jsonList);
     } catch (err) {
@@ -135,7 +138,7 @@ const handleNewEntry = async (entry) => {
         name: entry.name,
         description: entry.description,
         price: entry.price,
-        dimension: entry.dimension
+        dimension: entry.dimension,
       };
       resolve(fullEntry);
     } catch (err) {
