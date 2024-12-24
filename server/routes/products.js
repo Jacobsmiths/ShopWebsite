@@ -98,7 +98,6 @@ const fetchSheet = async (req, res, next) => {
     const sheetElements = await getData();
     let names = [];
     for (element in sheetElements) {
-      
       names.push(sheetElements[element].name);
 
       if (await checkEntryExistsFromName(sheetElements[element].name)) {
@@ -128,7 +127,7 @@ const fetchImage = async (req, res, next) => {
   const id = req.params.id;
   try {
     const obj = await getEntry(id);
-    const filePath = await getImage(obj.name);
+    const filePath = await getImage(obj.image_url);
     return res.status(200).sendFile(filePath);
   } catch (err) {
     next(err);
@@ -146,15 +145,18 @@ const onConfirm = async (req, res, next) => {
       const name = obj.name;
       const address = checkoutSession.shipping_details.address;
       let email;
-      if(checkoutSession.shipping_cost.shipping_rate==="shr_1QYxCoP3msuX5JsQGktLg3t7") {
+      if (
+        checkoutSession.shipping_cost.shipping_rate ===
+        "shr_1QYxCoP3msuX5JsQGktLg3t7"
+      ) {
         email = checkoutSession.customer_details.email;
       } else {
         email = "";
       }
-      
+
       try {
         await updateEntry({ id: id, available: false });
-        await appendToSheet({id: name, address: address, email: email});
+        await appendToSheet({ id: name, address: address, email: email });
         recieve = true;
       } catch (err) {
         console.log(`ther was an error updating the product to be unavailable`);
@@ -174,7 +176,6 @@ const onConfirm = async (req, res, next) => {
   }
   res.status(200).json({ received: recieve });
 };
-
 
 router.post("/create-checkout-session", retrieveCheckoutSession);
 router.post("/session-status", retrieveSessionStatus);
