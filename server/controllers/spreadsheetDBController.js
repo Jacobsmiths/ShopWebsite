@@ -70,7 +70,6 @@ const downloadFile = async (url, fileName) => {
       const stuffPath = path.join("/", `${fixedFileName}`);
       resolve(stuffPath);
     } catch (err) {
-      
       console.error("Error downloading file:", err);
       reject(`Error fetching the file: ${err}`);
     }
@@ -125,11 +124,6 @@ const handleNewEntry = async (entry) => {
     try {
       const filePath = await handleImage(entry.image_url, entry.name);
       const imageID = await generateUniqueID();
-      const addedElements = {
-        id: imageID,
-        image_url: filePath,
-        available: true,
-      };
       const fullEntry = {
         id: imageID,
         image_url: filePath,
@@ -156,7 +150,7 @@ const handleUpdatedEntry = async (entry) => {
 
 // Retrieve image path for a given file name
 const getImage = async (fileName) => {
-  const pngName = `${fileName}.png`;
+  const pngName = `${fileName}`;
   const filePath = path.join(imagePath, pngName);
 
   return new Promise((resolve, reject) => {
