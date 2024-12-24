@@ -151,8 +151,7 @@ const handleUpdatedEntry = async (entry) => {
 
 // Retrieve image path for a given file name
 const getImage = async (fileName) => {
-  const pngName = `${fileName}`;
-  const filePath = path.join(imagePath, pngName);
+  const filePath = path.join(imagesFolder, fileName);
 
   return new Promise((resolve, reject) => {
     try {
