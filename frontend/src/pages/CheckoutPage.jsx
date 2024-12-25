@@ -47,7 +47,7 @@ const CheckoutPage = ({ stripePromise }) => {
 
             {/* Right: Image and Price (Shrink-wrapped to fit content) */}
             <div
-              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start mr-4"
+              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start ml-2 mr-2"
               style={{ height: "min-content"}}
             >
               {/* Image in smaller form, full width */}
