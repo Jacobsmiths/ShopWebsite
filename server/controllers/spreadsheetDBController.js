@@ -103,14 +103,23 @@ const getData = async () => {
         spreadsheetId: SPREAD_SHEET_ID,
         range: rangeVar, // Specify the range in the sheet
       });
+
       const values = data.data.values;
-      let jsonList = values.map((item) => ({
-        name: item[nameElement],
-        price: item[priceElement],
-        image_url: item[imageElement],
-        description: item[descriptionElement],
-        dimension: item[dimensionElement],
-      }));
+
+      let jsonList = [];
+
+      if (Array.isArray(values) && values.length > 0) {
+        // If values exist and it's an array, map the values to jsonList.
+        jsonList = values.map((item) => ({
+          name: item[nameElement] || "", // Fallback to an empty string if undefined.
+          price: item[priceElement] || 0, // Fallback to 0 if undefined.
+          image_url: item[imageElement] || "", // Fallback to an empty string.
+          description: item[descriptionElement] || "", // Fallback to an empty string.
+          dimension: item[dimensionElement] || "", // Fallback to an empty string.
+        }));
+      } else {
+        console.log("Spreadsheet is empty or does not contain valid data.");
+      }
       resolve(jsonList);
     } catch (err) {
       console.log(err);
