@@ -18,12 +18,12 @@ const AboutPage = () => {
       <div className="flex">
         <p className="AboutText">
           Yo Whatsup, this is Jacob. I am the one who made the website and did
-          nothing regarding the artwork. I am just looking to build my resume so
-          if you have any quetions please feel free to reach out. My linkedin is
-          attatched to the bottom of the page
+          nothing regarding the artwork. I am an aspiring software engineer so
+          if you have any quetions or inquiries please feel free to reach out.
+          My linkedin is attatched to the bottom of the page
         </p>
         <img
-          className="AboutJacobPortrait md:height-auto"
+          className="AboutJacobPortrait md:width-auto max-h-36"
           alt="Image of Jacob"
           src={logo}
         />

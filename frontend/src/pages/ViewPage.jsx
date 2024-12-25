@@ -10,7 +10,7 @@ const ViewPage = () => {
 
   return (
     <div className="mt-4">
-      <Link to="/" className="ms-10 hover:underline hover:text-slate-700">
+      <Link to="/" className="ms-10 hover:underline hover:text-slate-700 inline">
         Go Back
       </Link>
       <ViewListing product={product} key={product.id} />
