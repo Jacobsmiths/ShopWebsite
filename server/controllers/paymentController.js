@@ -14,9 +14,10 @@ const retrieveSessionStatus = async (req, res, next) => {
 
 const retrieveCheckoutSession = async (req, res, next) => {
   const { name, cost, id } = req.body;
+  const numericCost = parseFloat(cost.replace('$', ''));
   const product = await stripe.products.create({ name: `${name}` });
   const price = await stripe.prices.create({
-    unit_amount: cost * 100,
+    unit_amount: numericCost * 100,
     currency: "usd",
     product: `${product.id}`,
   });
@@ -41,11 +42,11 @@ const retrieveCheckoutSession = async (req, res, next) => {
           delivery_estimate: {
             minimum: {
               unit: "business_day",
-              value: 10,
+              value: 7,
             },
             maximum: {
               unit: "business_day",
-              value: 30,
+              value: 15,
             },
           },
         },
