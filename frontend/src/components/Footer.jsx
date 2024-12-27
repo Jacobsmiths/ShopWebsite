@@ -4,7 +4,7 @@ import logo from "../assets/images/logo.jpg";
 
 const Footer = () => {
   return (
-    <div className="footer bg-slate-700 py-2 pt-3">
+    <div className="bg-black text-gray-200 py-2 pt-3">
       <div className="footer-container">
         <div className="footer-grid">
           {/* Left: Website Title and Logo */}
