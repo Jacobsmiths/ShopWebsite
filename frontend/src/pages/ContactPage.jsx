@@ -7,7 +7,10 @@ const ContactPage = () => {
       <p className="p-8">
         Hello! If you have any questions about specifics or artwork inquiries
         please feel free to contact us at:{" "}
-        <a href="mailto:emersonsartgallery@gmail.com" className="inline">
+        <a
+          href="mailto:emersonsartgallery@gmail.com"
+          className="inline transition-colors duration-300 hover:text-hotPink"
+        >
           emersonsartgallery@gmail.com
         </a>
       </p>

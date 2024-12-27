@@ -44,7 +44,7 @@ const CheckoutPage = ({ stripePromise }) => {
           <p className="text-center font-bold text-3xl">Checkout</p>
           <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr]">
             {/* Left: Checkout Form (3/4ths of the width) */}
-            <div className="bg-white rounded-lg p-6">
+            <div className="bg-slate-200 rounded-lg p-6">
               <CheckoutForm product={entry} stripePromise={stripePromise} />
             </div>
 
