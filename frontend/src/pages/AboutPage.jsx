@@ -1,6 +1,6 @@
 import React from "react";
-import logo from "../assets/images/logo.jpg";
-import EmersonPortrait from "../assets/images/portrait.png";
+import jacob from "../assets/images/jacob.jpg";
+import EmersonPortrait from "../assets/images/logo.jpg";
 
 const AboutPage = () => {
   return (
@@ -12,18 +12,18 @@ const AboutPage = () => {
           src={EmersonPortrait}
         />
         <p className="AboutText md:text-lg sm:text-xs">
-          I'm a multi-media, mei Ed-media artist focusing on oil and acrylic
-          painting. I'll graduate in May 2025 with a BA in art and a minor in
+          I’m a multi-discipline, mixed-media artist focusing on oil and acrylic
+          painting. I’ll graduate in May of 2025 with a BA in art and a minor in
           sociology. My interests and topics include self-discovery, politics,
-          religion, and growth/ change. In addition to painting, I enjoy
-          sculpture and graphite drawing.
+          religion, and growth/change. In addition to painting, I enjoy
+          sculpture, collage, and graphite drawing.
         </p>
       </div>
       <div className="flex flex-col sm:flex-row-reverse items-center sm:items-start">
         <img
           className="w-32 sm:w-48 h-auto md:m-8 sm:m-2"
           alt="Image of Jacob"
-          src={logo}
+          src={jacob}
         />
         <p className="AboutText md:text-lg sm:text-xs">
           Yo Whatsup, this is Jacob. I am the one who made the website and did
