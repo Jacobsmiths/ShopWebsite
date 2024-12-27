@@ -3,9 +3,7 @@ import ProductListings from "../components/ProductListings";
 
 const HomePage = () => {
   return (
-    <div className="bg-slate-200">
       <ProductListings />
-    </div>
   );
 };
 

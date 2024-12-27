@@ -12,7 +12,7 @@ const HomeListing = ({ product }) => {
       {available ? (
         <NavLink to={link}>
           <ItemCard
-            other="border-2 border-black hover:border-hotPink"
+            other="border-[2px] border-black transition-colors duration-300 hover:border-hotPink"
             inner={
               <>
                 <h3 className="text-xl font-bold">{name}</h3>

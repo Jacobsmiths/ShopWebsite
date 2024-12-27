@@ -13,7 +13,6 @@
   nav {
     @apply bg-black font-poppins;
   }
-
 }
 
 @layer components {
@@ -81,21 +80,18 @@
   .social-icon {
     @apply text-2xl;
   }
-}
 
-.AboutEmiPortrait {
-  width: 33%;
-}
-
-.AboutJacobPortrait {
-  width: 33%;
+  .HomePage {
+    @apply bg-slate-200 flex-grow;
+  }
 }
 
 .AboutText {
-  font-size: medium;
   width: auto;
   margin-left: 2rem;
   margin-right: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .grid-column {
@@ -207,8 +203,6 @@ td {
   font-weight: 600;
   color: #30313d;
 }
-
-
 
 @keyframes loading {
   0% {

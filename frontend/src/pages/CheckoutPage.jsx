@@ -69,6 +69,13 @@ const CheckoutPage = ({ stripePromise }) => {
                 <p>Price:</p>
                 <p className="text-gray-800">{entry.price}</p>
               </div>
+              <div className="border-t border-gray-300 my-4"></div>
+              <div className="flex justify-center text-sm text-gray-500">
+                <p>
+                  Note: Only Check for pickup if you live in San Antonio or the
+                  Woodlands, TX or have otherwise contacted us before hand
+                </p>
+              </div>
             </div>
           </div>
         </div>

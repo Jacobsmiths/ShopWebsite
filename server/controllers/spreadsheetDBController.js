@@ -9,10 +9,7 @@ const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
 const rangeVar = "Data!C2:G50";
 const rangeVar2 = "Shipping!A1";
-const imagesFolder = path.join(
-  path.dirname(__dirname),
-  "../frontend/public/images"
-);
+const imagesFolder = path.join(__dirname, "../public/images");
 const imagePath = "/images/";
 
 // Variables to handle spreadsheet columns
@@ -81,10 +78,15 @@ const downloadFile = async (url, fileName) => {
 const handleImage = async (originalUrl, imageName) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const imageId = await getImageID(originalUrl);
-      const imageUrl = await getImageURL(imageId);
-      const filePath = await downloadFile(imageUrl, imageName);
-      resolve(filePath);
+      if (originalUrl) {
+        const imageId = await getImageID(originalUrl);
+        const imageUrl = await getImageURL(imageId);
+        const sanitizedName = imageName.replace(/[^a-zA-Z ]/g, "");
+        const filePath = await downloadFile(imageUrl, sanitizedName);
+        resolve(filePath);
+      } else {
+        resolve("");
+      }
     } catch (err) {
       console.error("Error handling image:", err);
       reject(err);
