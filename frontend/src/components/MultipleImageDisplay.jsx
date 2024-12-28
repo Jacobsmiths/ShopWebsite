@@ -21,16 +21,16 @@ const ImageSelector = ({ imageString }) => {
     <>
       <div className="grid grid-cols-8 items-center">
         {/* Arrows */}
-        <div className="flex flex-col justify-center col-span-1 space-y-2 ml-2 md:ml-8 mr-2 md:mr-8 h-[500px]">
+        <div className="flex flex-col justify-center col-span-1 space-y-2">
           <button
             onClick={handleUpClick}
-            className="p-3 md:p-2 bg-gray-300 hover:bg-gray-400 rounded text-bold text-lg min-w-[30px] min-h-[30px] flex items-center justify-center"
+            className="p-2 bg-gray-300 hover:bg-gray-400 rounded text-bold text-lg min-w-[30px] max-w-[30px] "
           >
             ↑
           </button>
           <button
             onClick={handleDownClick}
-            className="p-3 md:p-2 bg-gray-300 hover:bg-gray-400 rounded text-bold text-lg min-w-[30px] min-h-[30px] flex items-center justify-center"
+            className="p-2 bg-gray-300 hover:bg-gray-400 rounded text-bold text-lg min-w-[30px] max-w-[30px] "
           >
             ↓
           </button>

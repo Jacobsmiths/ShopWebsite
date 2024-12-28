@@ -9,7 +9,7 @@ const ViewPage = () => {
   const product = useLoaderData();
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 overflow-x-hidden">
       <Link to="/" className="ms-10 hover:underline hover:text-slate-700 inline">
         Go Back
       </Link>

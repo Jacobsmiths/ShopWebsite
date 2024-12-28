@@ -208,10 +208,15 @@ const defineAddress = (obj) => {
   return result;
 };
 
-const appendToSheet = async ({ id, address, email }) => {
-  console.log("this is the values");
+const appendToSheet = async ({
+  id,
+  address,
+  email,
+  shippingMethod,
+  customer,
+}) => {
   const usableAddress = defineAddress(address);
-  console.log(id, usableAddress, email);
+  console.log(id, usableAddress, email, shippingMethod, customer);
 
   try {
     await sheets.spreadsheets.values.append({
@@ -219,7 +224,7 @@ const appendToSheet = async ({ id, address, email }) => {
       range: rangeVar2,
       valueInputOption: "RAW",
       resource: {
-        values: [[id, usableAddress, email]],
+        values: [[id, usableAddress, email, shippingMethod, customer]],
       },
     });
     console.log("Data successfully appended!");

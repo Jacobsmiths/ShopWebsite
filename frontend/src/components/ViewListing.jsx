@@ -40,7 +40,7 @@ const ViewListing = ({ product }) => {
       ) : (
         <div className="flex flex-col md:flex-row mb-12 mt-6 ">
           {/* Multiple Image Display */}
-          <div className="md:w-2/3 w-4/5 h-auto flex mx-auto ">
+          <div className="md:w-2/3 w-5/6 h-auto flex mx-0 ml-4">
             {/* Centered Image on smaller screens */}
             <MultipleImageDisplay imageString={imageString} />
           </div>

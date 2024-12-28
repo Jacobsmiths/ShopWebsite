@@ -108,7 +108,7 @@ const fetchSheet = async (req, res, next) => {
               ...sheetElements[element],
               ...{ id: comparison, available: true },
             };
-            await updateEntry(temp); // this updates everything except images 
+            await updateEntry(temp); // this updates everything except images
           }
         } else {
           const newEntry = await handleNewEntry(sheetElements[element]);
@@ -143,22 +143,22 @@ const onConfirm = async (req, res, next) => {
     case "checkout.session.completed":
       const checkoutSession = event.data.object;
       const id = checkoutSession.metadata.id;
+      console.log(checkoutSession);
       const obj = await getEntry(id);
-      const name = obj.name;
+      const paintingName = obj.name;
       const address = checkoutSession.shipping_details.address;
-      let email;
-      if (
-        checkoutSession.shipping_cost.shipping_rate ===
-        "shr_1QYxCoP3msuX5JsQGktLg3t7"
-      ) {
-        email = checkoutSession.customer_details.email;
+      const email = checkoutSession.customer_details.email;
+      const customerName = checkoutSession.customer_details.name;
+      let shippingMethod;
+      if (checkoutSession.total_details.amount_shipping === 0) {
+        shippingMethod = "Pick Up";
       } else {
-        email = "";
+        shippingMethod = "Shipping";
       }
 
       try {
         await updateEntry({ id: id, available: false });
-        await appendToSheet({ id: name, address: address, email: email });
+        await appendToSheet({ id: paintingName, address: address, email: email, shippingMethod: shippingMethod, customer: customerName });
         recieve = true;
       } catch (err) {
         console.log(`ther was an error updating the product to be unavailable`);
