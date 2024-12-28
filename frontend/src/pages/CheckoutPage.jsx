@@ -8,7 +8,7 @@ const CheckoutPage = ({ stripePromise }) => {
   const { id } = useParams();
   const [entry, setEntry] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [images, setImages] = useState([""]);
+  const [images, setImages] = useState(["image not loading"]);
 
   useEffect(() => {
     const fetchEntry = async () => {
@@ -16,13 +16,11 @@ const CheckoutPage = ({ stripePromise }) => {
         const res = await fetch(`/api/products/${id}`);
         const product = await res.json();
         setEntry(product);
-        console.log("fart");
-        console.log(product);
+        setImages(product.imageString.split(","));
       } catch (err) {
         console.log(err);
       } finally {
         setLoading(false);
-        setImages(entry.imageString.split(","));
       }
     };
     fetchEntry();
