@@ -72,8 +72,8 @@ const CheckoutPage = ({ stripePromise }) => {
               <div className="border-t border-gray-300 my-4"></div>
               <div className="flex justify-center text-sm text-gray-500">
                 <p>
-                  Note: Only Check for pickup if you live in San Antonio or the
-                  Woodlands, TX or have otherwise contacted us before hand
+                  Note: Pickup is only in San Antonio, Please email us if you
+                  have any questions
                 </p>
               </div>
             </div>

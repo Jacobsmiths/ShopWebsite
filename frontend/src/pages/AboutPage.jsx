@@ -5,13 +5,13 @@ import EmersonPortrait from "../assets/images/logo.jpg";
 const AboutPage = () => {
   return (
     <div className="block">
-      <div className="flex flex-col sm:flex-row items-center sm:items-start">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start md:m-0 mt-4">
         <img
-          className="w-32 sm:w-48 h-auto md:m-8 sm:m-2"
+          className="w-10/12 sm:w-1/2 h-auto md:m-8 sm:m-2"
           alt="Image of Emi"
           src={EmersonPortrait}
         />
-        <p className="AboutText md:text-lg sm:text-xs">
+        <p className="AboutText md:text-lg md:pr-4 sm:text-xs">
           I’m a multi-discipline, mixed-media artist focusing on oil and acrylic
           painting. I’ll graduate in May of 2025 with a BA in art and a minor in
           sociology. My interests and topics include self-discovery, politics,
@@ -21,7 +21,7 @@ const AboutPage = () => {
       </div>
       <div className="flex flex-col sm:flex-row-reverse items-center sm:items-start">
         <img
-          className="w-32 sm:w-48 h-auto md:m-8 sm:m-2"
+          className="w-2/3 sm:w-1/3 h-auto md:m-8 sm:m-2"
           alt="Image of Jacob"
           src={jacob}
         />
