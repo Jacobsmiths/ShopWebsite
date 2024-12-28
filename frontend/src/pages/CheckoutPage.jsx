@@ -8,6 +8,7 @@ const CheckoutPage = ({ stripePromise }) => {
   const { id } = useParams();
   const [entry, setEntry] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [images, setImages] = useState([""]);
 
   useEffect(() => {
     const fetchEntry = async () => {
@@ -21,6 +22,7 @@ const CheckoutPage = ({ stripePromise }) => {
         console.log(err);
       } finally {
         setLoading(false);
+        setImages(entry.imageString.split(","));
       }
     };
     fetchEntry();
@@ -55,9 +57,9 @@ const CheckoutPage = ({ stripePromise }) => {
             >
               {/* Image in smaller form, full width */}
               <img
-                src={entry.image_url}
+                src={images[0]}
                 className="w-full object-contain mb-4"
-                alt="Product Image"
+                alt={images[0]}
                 style={{ maxHeight: "200px", objectFit: "contain" }}
               />
 
