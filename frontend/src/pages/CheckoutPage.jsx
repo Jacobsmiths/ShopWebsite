@@ -44,13 +44,13 @@ const CheckoutPage = ({ stripePromise }) => {
           <p className="text-center font-bold text-3xl">Checkout</p>
           <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr]">
             {/* Left: Checkout Form (3/4ths of the width) */}
-            <div className="bg-slate-200 rounded-lg p-6">
+            <div className="bg-slate-200 rounded-lg p-2">
               <CheckoutForm product={entry} stripePromise={stripePromise} />
             </div>
 
             {/* Right: Image and Price (Shrink-wrapped to fit content) */}
             <div
-              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start mt-4 ml-6 mr-6"
+              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start md:ml-0 md:mr-12 mt-4 ml-6 mr-6"
               style={{ height: "min-content" }}
             >
               {/* Image in smaller form, full width */}

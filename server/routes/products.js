@@ -95,7 +95,8 @@ const updateProduct = async (req, res, next) => {
 
 const fetchSheet = async (req, res, next) => {
   try {
-    const sheetElements = await getData();
+    const sheetElements = await getData(); // get data returns a list of json elements directly whats on the spreadsheet
+    // images is an image string which is comma seperated urls
     let names = [];
     for (element in sheetElements) {
       names.push(sheetElements[element].name);
@@ -107,7 +108,7 @@ const fetchSheet = async (req, res, next) => {
               ...sheetElements[element],
               ...{ id: comparison, available: true },
             };
-            await updateEntry(temp);
+            await updateEntry(temp); // this updates everything except images 
           }
         } else {
           const newEntry = await handleNewEntry(sheetElements[element]);
