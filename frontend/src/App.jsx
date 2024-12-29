@@ -16,7 +16,7 @@ import AboutPage from "./pages/AboutPage";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(
-  "pk_live_51QWWzXP3msuX5JsQPRRf6wzJDMKVNlx840aKwdfjEVoEAahRqT0ilm0EbCWHyqoObBzAPSnK1ArNdibJMUN459SS00zAaShFWw"
+  import.meta.env.VITE_STRIPE_PUBLIC_KEY
 );
 
 const App = () => {

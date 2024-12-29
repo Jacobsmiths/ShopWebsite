@@ -59,7 +59,7 @@ const downloadFile = async (url, fileName) => {
         reject(new Error(`Failed to fetch: ${response.statusText}`));
       }
 
-      const fixedFileName = fileName.replace(/ /g, "-") + ".png";
+      const fixedFileName = fileName.replace(/ /g, "-") + ".jpg";
       const savePath = path.join(imagesFolder, `${fixedFileName}`);
       console.log(savePath);
       const fileStream = await fs.createWriteStream(savePath);

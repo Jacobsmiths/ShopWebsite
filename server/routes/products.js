@@ -153,12 +153,18 @@ const onConfirm = async (req, res, next) => {
       if (checkoutSession.total_details.amount_shipping === 0) {
         shippingMethod = "Pick Up";
       } else {
-        shippingMethod = "Shipping";
+        shippingMethod = "Standard Shipping";
       }
 
       try {
         await updateEntry({ id: id, available: false });
-        await appendToSheet({ id: paintingName, address: address, email: email, shippingMethod: shippingMethod, customer: customerName });
+        await appendToSheet({
+          id: paintingName,
+          address: address,
+          email: email,
+          shippingMethod: shippingMethod,
+          customer: customerName,
+        });
         recieve = true;
       } catch (err) {
         console.log(`ther was an error updating the product to be unavailable`);
