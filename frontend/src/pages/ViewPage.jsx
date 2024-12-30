@@ -1,7 +1,5 @@
 import React from "react";
-import { useLoaderData, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Spinner from "../components/Spinner";
+import { useLoaderData } from "react-router-dom";
 import ViewListing from "../components/ViewListing";
 import { Link } from "react-router-dom";
 

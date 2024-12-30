@@ -152,7 +152,7 @@ a {
   max-height: 80vh; /* Keeps it responsive within the viewport */
   display: block;
   z-index: 1; /* Place it below the top image */
-  opacity: 30%;
+  opacity: 50%;
 }
 
 /* Style for the top image */

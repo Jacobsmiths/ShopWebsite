@@ -14,10 +14,9 @@ import CompletePage from "./pages/CompletePage";
 import ContactPage from "./pages/ContactPage";
 import AboutPage from "./pages/AboutPage";
 import { loadStripe } from "@stripe/stripe-js";
+import SoldOutPage from "./pages/SoldOutPage";
 
-const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLIC_KEY
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const App = () => {
   const router = createBrowserRouter(
@@ -28,6 +27,11 @@ const App = () => {
         <Route
           path="checkout/:id"
           element={<CheckoutPage stripePromise={stripePromise} />}
+        />
+        <Route
+          path="soldout/:id"
+          element={<SoldOutPage />}
+          loader={productLoader}
         />
         <Route path="complete" element={<CompletePage />} />
         <Route path="about" element={<AboutPage />} />

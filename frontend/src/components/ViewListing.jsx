@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import MultipleImageDisplay from "./MultipleImageDisplay";
 
 const ViewListing = ({ product }) => {
-  const { id, description, name, imageString, price, dimension } = product;
+  const { id, description, name, imageString, price, dimension, available } =
+    product;
   const checkoutUrl = `https://thewaitingmarket.me/checkout/${id}`;
   const images = imageString.split(",");
 
@@ -29,11 +30,17 @@ const ViewListing = ({ product }) => {
               <p className="text-gray-800 mb-6">{description}</p>
 
               {/* Checkout Button */}
-              <Link to={checkoutUrl}>
-                <button className="self-start bg-blue-500 text-white px-6 py-2 font-medium uppercase tracking-wide hover:bg-blue-600 transition duration-300">
-                  Checkout
-                </button>
-              </Link>
+              {available ? (
+                <Link to={checkoutUrl}>
+                  <button className="self-start bg-blue-500 text-white px-6 py-2 font-medium uppercase tracking-wide hover:bg-blue-600 transition duration-300">
+                    Checkout
+                  </button>
+                </Link>
+              ) : (
+                <p className="self-start text-red-800 px-6 py-2 font-medium uppercase tracking-wide">
+                  Sold Out
+                </p>
+              )}
             </div>
           </div>
         </div>
