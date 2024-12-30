@@ -11,7 +11,7 @@ const ViewListing = ({ product }) => {
   return (
     <>
       {images.length === 1 ? (
-        <div className="mb-12 mt-6 flex flex-col">
+        <div className="mb-8 mt-6 flex flex-col">
           <div className="flex flex-col md:flex-row ">
             {/* Left: Image */}
             <img
@@ -20,7 +20,7 @@ const ViewListing = ({ product }) => {
               className="w-auto md:w-1/2 md:h-auto object-contain px-8 max-h-[500px]"
             />
             {/* Right: Details */}
-            <div className="flex flex-col w-full md:w-1/2 ml-6 mt-6">
+            <div className="flex flex-col w-full md:w-1/2 mt-6 px-4">
               {/* Title and Price */}
               <h1 className="text-xl font-bold mb-2">{name}</h1>
               <p className="text-xl font-medium text-gray-600 mb-3">{price}</p>
@@ -45,15 +45,14 @@ const ViewListing = ({ product }) => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col md:flex-row mb-12 mt-6 ">
+        <div className="flex flex-col md:flex-row mb-8 mt-6 ">
           {/* Multiple Image Display */}
-          <div className="md:w-2/3 w-5/6 h-auto flex mx-0 ml-4">
+          <div className="md:w-2/3 w-5/6 h-auto flex mx-0 px-4">
             {/* Centered Image on smaller screens */}
             <MultipleImageDisplay imageString={imageString} />
           </div>
-
-          {/* Right: Details */}
-          <div className="flex flex-col w-full md:w-1/3 items-start ml-4 mr-4">
+          {/* Product Details */}
+          <div className="flex flex-col w-full md:w-1/3 items-start px-4 py-4">
             {/* Title and Price */}
             <h1 className="text-xl font-bold mb-2">{name}</h1>
             <p className="text-xl font-medium text-gray-600 mb-3">{price}</p>
@@ -63,11 +62,17 @@ const ViewListing = ({ product }) => {
             <p className="text-gray-800 mb-6">{description}</p>
 
             {/* Checkout Button */}
-            <Link to={checkoutUrl}>
-              <button className="self-end md:self-auto bg-blue-500 text-white px-6 py-2 font-medium uppercase tracking-wide hover:bg-blue-600 transition duration-300">
-                Checkout
-              </button>
-            </Link>
+            {available ? (
+              <Link to={checkoutUrl}>
+                <button className="self-start bg-blue-500 text-white px-6 py-2 font-medium uppercase tracking-wide hover:bg-blue-600 transition duration-300">
+                  Checkout
+                </button>
+              </Link>
+            ) : (
+              <p className="self-start text-red-800 px-6 py-2 font-medium uppercase tracking-wide">
+                Sold Out
+              </p>
+            )}
           </div>
         </div>
       )}
