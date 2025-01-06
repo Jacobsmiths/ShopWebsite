@@ -2,4 +2,4 @@
 .env
 PaintBot.json
 products.db
-public/images
+/public
