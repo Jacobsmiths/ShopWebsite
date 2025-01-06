@@ -142,48 +142,51 @@ const onConfirm = async (req, res, next) => {
   switch (event.type) {
     case "checkout.session.completed":
       const checkoutSession = event.data.object;
-      const id = checkoutSession.metadata.id;
-      console.log(checkoutSession);
-      const obj = await getEntry(id);
-      const paintingName = obj.name;
-      const address = checkoutSession.shipping_details.address;
-      const email = checkoutSession.customer_details.email;
-      const customerName = checkoutSession.customer_details.name;
-      let shippingMethod;
-      if (checkoutSession.total_details.amount_shipping === 0) {
-        shippingMethod = "Pick Up";
-      } else {
-        shippingMethod = "Standard Shipping";
-      }
-
+      const ids = checkoutSession.metadata.id.split(',');
       try {
-        await updateEntry({ id: id, available: false });
-        await appendToSheet({
-          id: paintingName,
-          address: address,
-          email: email,
-          shippingMethod: shippingMethod,
-          customer: customerName,
-        });
+        for (const id of ids) {
+          const obj = await getEntry(id);
+          const paintingName = obj.name;
+          const address = checkoutSession.shipping_details.address;
+          const email = checkoutSession.customer_details.email;
+          const customerName = checkoutSession.customer_details.name;
+          
+          let shippingMethod;
+          if (checkoutSession.total_details.amount_shipping === 0) {
+            shippingMethod = "Pick Up";
+          } else {
+            shippingMethod = "Standard Shipping";
+          }
+          await updateEntry({ id: id, available: false });
+          await appendToSheet({
+            id: paintingName,
+            address: address,
+            email: email,
+            shippingMethod: shippingMethod,
+            customer: customerName,
+          });
+        }
         recieve = true;
       } catch (err) {
-        console.log(`ther was an error updating the product to be unavailable`);
+        console.log(`There was an error updating the product(s) to be unavailable`);
         next(
           new Error(
-            "there was an error chaning availability of product once bought"
+            "There was an error changing the availability of the product(s) once bought"
           )
         );
         recieve = false;
       }
       break;
+
     default:
       console.log(`Unhandled event type ${event.type}`);
       next(new Error(`Unhandled event type ${event.type}`));
       recieve = false;
       break;
   }
-  res.status(200).json({ received: recieve });
+  res.status(200).json({ received: recieved });
 };
+
 
 router.post("/create-checkout-session", retrieveCheckoutSession);
 router.post("/session-status", retrieveSessionStatus);
