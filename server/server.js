@@ -4,12 +4,13 @@ const errorHandler = require("./middleware/error");
 const notFound = require("./middleware/notFound");
 const logger = require("./middleware/logger");
 const products = require("./routes/products");
+const path = require("path");
 
 const port = 8000;
 
 // creates an express app
 const app = express();
-
+app.use("/public", express.static("./public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

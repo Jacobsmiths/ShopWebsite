@@ -1,63 +1,100 @@
 import React, { useState, useEffect } from "react";
-import { useLoaderData, useParams } from "react-router-dom";
-import CheckoutListing from "../components/CheckoutListing";
-import Spinner from "../components/Spinner";
 import { Link } from "react-router-dom";
 import CheckoutForm from "../components/CheckoutForm";
-import { Elements } from "@stripe/react-stripe-js";
+import Spinner from "../components/Spinner";
+import { useCart } from "../contexts/CartContext";
+import MultipleImageDisplay from "../components/MultipleImageDisplay";
 
 const CheckoutPage = ({ stripePromise }) => {
-  const { id } = useParams();
+  const { cart, addToCart, removeFromCart, checkInCart } = useCart();
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [clientSecret, setSecret] = useState(null);
-  const [entry, setEntry] = useState(undefined);
+  const [images, setImages] = useState(["image(s) not loading"]);
 
   useEffect(() => {
-    const fetchEntry = async () => {
+    async function fetchData() {
       try {
-        const res = await fetch(`/api/products/${id}`);
-        const product = await res.json();
-        setEntry(product);
-
-        const secretResponse = await fetch("/api/products/create-secret", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items: [product] }),
-        });
-        const { clientSecret } = await secretResponse.json();
-        setSecret(clientSecret);
+        const images = [];
+        const products = [];
+        for (const id of cart) {
+          const res = await fetch(`/api/products/${id}`);
+          const data = await res.json();
+          products.push(data);
+          images.push(data.imageString.split(",")[0]);
+        }
+        setItems(products);
+        setImages(images);
       } catch (err) {
         console.log(err);
       } finally {
         setLoading(false);
       }
-    };
-    fetchEntry();
-  }, [id]);
-
-  const appearance = { theme: "stripe" };
-  const loader = "auto";
+    }
+    fetchData();
+  }, [cart]);
 
   return (
     <div className="mt-4">
-      <Link to="/" className="ms-10 hover:underline hover:text-slate-700">
-        Go Back
-      </Link>
-
-      {loading ? (
+      <div className="inline-block p-4 ">
+        <Link to={`/`} className="ms-10 hover:underline hover:text-slate-700">
+          Go Back
+        </Link>
+      </div>
+      {cart.size <= 0 ? (
+        <div>cart empty</div>
+      ) : loading ? (
         <Spinner loading={loading} />
       ) : (
-        clientSecret && (
-          <Elements
-            options={{ clientSecret, appearance, loader }}
-            stripe={stripePromise}
-          >
-            <div>
-              <CheckoutListing product={entry} key={entry.id} />
-              <CheckoutForm />
+        <div classNam4e="pb-10">
+          <p className="text-center font-bold text-3xl">Checkout</p>
+          <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr]">
+            <div className="bg-slate-200 rounded-lg p-2">
+              <CheckoutForm products={items} stripePromise={stripePromise} />
             </div>
-          </Elements>
-        )
+
+            <div
+              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start md:ml-0 md:mr-12 mt-4 ml-6 mr-6"
+              style={{ height: "min-content" }}
+            >
+              {images.length === 1 ? (
+                <img
+                  src={images[0]}
+                  className="w-full object-contain mb-4"
+                  style={{ maxHeight: "200px", objectFit: "contain" }}
+                />
+              ) : (
+                <MultipleImageDisplay
+                  imageString={images.join()}
+                  size={"small"}
+                />
+              )}
+
+              <div>
+                {items.map((product, index) => (
+                  <div key={index}>
+                    {/* Horizontal line */}
+                    <div className="border-t border-gray-300 my-4"></div>
+
+                    {/* Price of Painting */}
+                    <div className="flex justify-between text-lg font-semibold">
+                      <p>Price of {product.name}:</p>
+                      <p className="text-gray-800">{product.price}</p>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Note */}
+                <div className="border-t border-gray-300 my-4"></div>
+                <div className="flex justify-center text-sm text-gray-500">
+                  <p>
+                    Note: Pickup is only in San Antonio. Please email us if you
+                    have any questions.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -1,21 +1,24 @@
 import React from "react";
-import MainLayout from "./layouts/MainLayout";
-import HomePage, { productLoader } from "./pages/HomePage";
-import NotFoundPage from "./pages/NotFoundPage";
 import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+import MainLayout from "./layouts/MainLayout";
+import HomePage, { productLoader } from "./pages/HomePage";
+import NotFoundPage from "./pages/NotFoundPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ViewPage from "./pages/ViewPage";
 import CompletePage from "./pages/CompletePage";
+import ContactPage from "./pages/ContactPage";
+import AboutPage from "./pages/AboutPage";
 import { loadStripe } from "@stripe/stripe-js";
+import SoldOutPage from "./pages/SoldOutPage";
+import { CartProvider } from "./contexts/CartContext";
+import CartPage from "./pages/CartPage";
 
-const stripePromise = loadStripe(
-  "pk_test_51QWWzXP3msuX5JsQSplZGGjyhrOS45hW5DMNnmIlHfUri1nzUA4Jgx9a0SxMVtXRIHJT8ofwwjeyDuvjgaCMRPEk00oYLG2N4U"
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const App = () => {
   const router = createBrowserRouter(
@@ -24,28 +27,28 @@ const App = () => {
         <Route index element={<HomePage />} />
         <Route path="view/:id" element={<ViewPage />} loader={productLoader} />
         <Route
-          path="checkout/:id"
-          element={
-            <CheckoutPage
-              stripePromise={stripePromise}
-              loader={productLoader}
-            />
-          }
+          path="checkout"
+          element={<CheckoutPage stripePromise={stripePromise} />}
         />
         <Route
-          path="checkout-complete"
-          element={
-            <CompletePage
-              stripePromise={stripePromise}
-            />
-          }
+          path="soldout/:id"
+          element={<SoldOutPage />}
+          loader={productLoader}
         />
+        <Route path="cart" element={<CartPage />} />
+        <Route path="complete" element={<CompletePage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="contact" element={<ContactPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <CartProvider>
+      <RouterProvider router={router} />
+    </CartProvider>
+  );
 };
 
 export default App;

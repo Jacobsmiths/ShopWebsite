@@ -7,24 +7,23 @@ const { v4: uuidv4 } = require("uuid");
 // Define a few constant global variables and paths to key information
 const KEY_FILE_PATH = path.join(__dirname, "../PaintBot.json");
 const SPREAD_SHEET_ID = process.env.SpreadSheet_ID;
-const rangeVar = "Data!C2:F30";
-const imagesFolder = path.join(
-  path.dirname(__dirname),
-  "../frontend/public/images"
-);
+const rangeVar = "Data!C2:K50";
+const rangeVar2 = "Shipping!A1";
+const imagesFolder = path.join(__dirname, "../public/images");
 const imagePath = "/images/";
 
 // Variables to handle spreadsheet columns
 const nameElement = 0;
 const priceElement = 1;
 const descriptionElement = 2;
-const imageElement = 3;
+const imageElement = 4;
+const dimensionElement = 3;
 
 // Initialize Sheets API client
 const sheets = google.sheets("v4");
 const auth = new google.auth.GoogleAuth({
   keyFile: KEY_FILE_PATH,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"], // Read-only access to Sheets
+  scopes: ["https://www.googleapis.com/auth/spreadsheets"], // Read-only access to Sheets
 });
 
 // Authenticate and set global authenticator client for API requests
@@ -60,11 +59,13 @@ const downloadFile = async (url, fileName) => {
         reject(new Error(`Failed to fetch: ${response.statusText}`));
       }
 
-      const savePath = path.join(imagesFolder, `./${fileName}.png`);
+      const fixedFileName = fileName.replace(/ /g, "-") + ".jpg";
+      const savePath = path.join(imagesFolder, `${fixedFileName}`);
+      console.log(savePath);
       const fileStream = await fs.createWriteStream(savePath);
       await response.body.pipe(fileStream);
-
-      const stuffPath = path.join(imagePath, `${fileName}.png`);
+      const stuffPath = path.join(imagePath, `${fixedFileName}`);
+      console.log(stuffPath);
       resolve(stuffPath);
     } catch (err) {
       console.error("Error downloading file:", err);
@@ -74,13 +75,24 @@ const downloadFile = async (url, fileName) => {
 };
 
 // Handle image processing: downloading and storing
-const handleImage = async (originalUrl, imageName) => {
+const handleImage = async (urlString, imageName) => {
+  const arr = urlString.split(",");
   return new Promise(async (resolve, reject) => {
+    let filePaths = [];
     try {
-      const imageId = await getImageID(originalUrl);
-      const imageUrl = await getImageURL(imageId);
-      const filePath = await downloadFile(imageUrl, imageName);
-      resolve(filePath);
+      if (arr) {
+        for (element in arr) {
+          let imageId = await getImageID(arr[element]);
+          let imageUrl = await getImageURL(imageId);
+          let sanitizedName =
+            imageName.replace(/[^a-zA-Z ]/g, "") + `-${element}`;
+          let filePath = await downloadFile(imageUrl, sanitizedName);
+          filePaths.push(filePath);
+        }
+        resolve(filePaths.join());
+      } else {
+        resolve(filePaths.join());
+      }
     } catch (err) {
       console.error("Error handling image:", err);
       reject(err);
@@ -99,13 +111,30 @@ const getData = async () => {
         spreadsheetId: SPREAD_SHEET_ID,
         range: rangeVar, // Specify the range in the sheet
       });
-      const values = data.data.values;
-      let jsonList = values.map((item) => ({
-        name: item[nameElement],
-        price: item[priceElement],
-        image_url: item[imageElement],
-        description: item[descriptionElement],
-      }));
+
+      const values = data.data.values; // values is 2d array of what is in the database
+      console.log(values);
+
+      let jsonList = [];
+
+      if (values && values.length > 0) {
+        for (let i = 0; i < values.length; i++) {
+          let imagesString = "";
+          if (values[i][imageElement] != "") {
+            let images = values[i].slice(imageElement);
+            imagesString = images.join();
+          }
+          jsonList.push({
+            name: values[i][nameElement] || "", // Fallback to an empty string if undefined.
+            price: values[i][priceElement] || 0, // Fallback to 0 if undefined.
+            description: values[i][descriptionElement] || "", // Fallback to an empty string.
+            dimension: values[i][dimensionElement] || "",
+            imageString: imagesString, // image string is either the list of the images starting with the image to be on the first page or nothing
+          });
+        }
+      } else {
+        console.log("Spreadsheet is empty.");
+      }
       resolve(jsonList);
     } catch (err) {
       console.log(err);
@@ -114,23 +143,25 @@ const getData = async () => {
   });
 };
 
+// this is given the data from the sheets and handles making new id and other stuff
 const handleNewEntry = async (entry) => {
+  // entry looks like {name, description, price, imageString}
+  const { name, price, description, dimension, imageString } = entry;
+  console.log(name, price, description, dimension, imageString);
+
   return new Promise(async (resolve, reject) => {
     try {
-      const filePath = await handleImage(entry.image_url, entry.name);
+      const filePathString = await handleImage(imageString, name);
+      console.log(filePathString);
       const imageID = await generateUniqueID();
-      const addedElements = {
-        id: imageID,
-        image_url: filePath,
-        available: true,
-      };
       const fullEntry = {
         id: imageID,
-        image_url: filePath,
+        imageString: filePathString,
         available: true,
         name: entry.name,
         description: entry.description,
         price: entry.price,
+        dimension: entry.dimension,
       };
       resolve(fullEntry);
     } catch (err) {
@@ -149,8 +180,10 @@ const handleUpdatedEntry = async (entry) => {
 
 // Retrieve image path for a given file name
 const getImage = async (fileName) => {
-  const pngName = `${fileName}.png`;
-  const filePath = path.join(imagePath, pngName);
+  const filePath = path.join(
+    path.join(path.dirname(__dirname), "../frontend/public/"),
+    fileName
+  );
 
   return new Promise((resolve, reject) => {
     try {
@@ -163,6 +196,42 @@ const getImage = async (fileName) => {
       reject(err);
     }
   });
+};
+
+const defineAddress = (obj) => {
+  let result = "";
+  for (const key in obj) {
+    if (obj[key] != null) {
+      result += `${obj[key]} `;
+    }
+  }
+  return result;
+};
+
+const appendToSheet = async ({
+  id,
+  address,
+  email,
+  shippingMethod,
+  customer,
+}) => {
+  const usableAddress = defineAddress(address);
+  console.log(id, usableAddress, email, shippingMethod, customer);
+
+  try {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREAD_SHEET_ID,
+      range: rangeVar2,
+      valueInputOption: "RAW",
+      resource: {
+        values: [[id, usableAddress, email, shippingMethod, customer]],
+      },
+    });
+    console.log("Data successfully appended!");
+  } catch (err) {
+    console.error("Error appending data:", err);
+    throw err;
+  }
 };
 
 // Authenticate when the module is loaded
@@ -180,4 +249,5 @@ module.exports = {
   generateUniqueID,
   handleNewEntry,
   handleUpdatedEntry,
+  appendToSheet,
 };

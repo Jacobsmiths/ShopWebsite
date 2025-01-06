@@ -13,11 +13,11 @@ const {
   getData,
   getImage,
   handleNewEntry,
-  handleUpdatedEntry,
+  appendToSheet,
 } = require("../controllers/spreadsheetDBController");
 const {
-  createPaymentIntent,
-  retrievePaymentIntent,
+  retrieveSessionStatus,
+  retrieveCheckoutSession,
 } = require("../controllers/paymentController");
 
 const router = express.Router();
@@ -95,23 +95,26 @@ const updateProduct = async (req, res, next) => {
 
 const fetchSheet = async (req, res, next) => {
   try {
-    const sheetElements = await getData();
+    const sheetElements = await getData(); // get data returns a list of json elements directly whats on the spreadsheet
+    // images is an image string which is comma seperated urls
     let names = [];
     for (element in sheetElements) {
       names.push(sheetElements[element].name);
-      if (await checkEntryExistsFromName(sheetElements[element].name)) {
-        let comparison = await compareEntry(sheetElements[element]);
-        if (comparison != null) {
-          let temp = {
-            ...sheetElements[element],
-            ...{ id: comparison, available: true },
-          };
-          await updateEntry(temp);
+      if (sheetElements[element].name != "") {
+        if (await checkEntryExistsFromName(sheetElements[element].name)) {
+          let comparison = await compareEntry(sheetElements[element]);
+          if (comparison != null) {
+            let temp = {
+              ...sheetElements[element],
+              ...{ id: comparison, available: true },
+            };
+            await updateEntry(temp); // this updates everything except images
+          }
+        } else {
+          const newEntry = await handleNewEntry(sheetElements[element]);
+          console.log(`New entry: ${newEntry.image_url}`);
+          await addEntry(newEntry);
         }
-      } else {
-        const newEntry = await handleNewEntry(sheetElements[element]);
-        console.log(`New entry: ${newEntry.image_url}`);
-        await addEntry(newEntry);
       }
     }
     await removeElementsNotInList(names);
@@ -126,7 +129,7 @@ const fetchImage = async (req, res, next) => {
   const id = req.params.id;
   try {
     const obj = await getEntry(id);
-    const filePath = await getImage(obj.name);
+    const filePath = await getImage(obj.image_url);
     return res.status(200).sendFile(filePath);
   } catch (err) {
     next(err);
@@ -137,13 +140,31 @@ const onConfirm = async (req, res, next) => {
   const event = req.body;
   let recieve = false;
   switch (event.type) {
-    case "payment_intent.succeeded":
-      const paymentIntent = event.data.object;
-      const id = paymentIntent.metadata.purchasedIdList;
-      console.log(paymentIntent);
-      console.log(id);
+    case "checkout.session.completed":
+      const checkoutSession = event.data.object;
+      const id = checkoutSession.metadata.id;
+      console.log(checkoutSession);
+      const obj = await getEntry(id);
+      const paintingName = obj.name;
+      const address = checkoutSession.shipping_details.address;
+      const email = checkoutSession.customer_details.email;
+      const customerName = checkoutSession.customer_details.name;
+      let shippingMethod;
+      if (checkoutSession.total_details.amount_shipping === 0) {
+        shippingMethod = "Pick Up";
+      } else {
+        shippingMethod = "Standard Shipping";
+      }
+
       try {
         await updateEntry({ id: id, available: false });
+        await appendToSheet({
+          id: paintingName,
+          address: address,
+          email: email,
+          shippingMethod: shippingMethod,
+          customer: customerName,
+        });
         recieve = true;
       } catch (err) {
         console.log(`ther was an error updating the product to be unavailable`);
@@ -164,8 +185,8 @@ const onConfirm = async (req, res, next) => {
   res.status(200).json({ received: recieve });
 };
 
-router.post("/get-secret", retrievePaymentIntent);
-router.post("/create-secret", createPaymentIntent);
+router.post("/create-checkout-session", retrieveCheckoutSession);
+router.post("/session-status", retrieveSessionStatus);
 router.get("/fetchsheet", fetchSheet);
 router.get("/gallery/:id", fetchImage);
 router.get("/:id", getProduct);
