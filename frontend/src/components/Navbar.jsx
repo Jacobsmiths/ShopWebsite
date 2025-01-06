@@ -16,7 +16,10 @@ const Navbar = () => {
             </NavLink>
           </div>
           <div className="navbar-right">
-            <Link to="/" className="NavLink">
+            <Link
+              to="/"
+              className="NavLink"
+            >
               Gallery
             </Link>
             <Link to="/cart" className="NavLink">

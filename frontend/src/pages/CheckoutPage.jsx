@@ -36,7 +36,10 @@ const CheckoutPage = ({ stripePromise }) => {
   return (
     <div className="mt-4">
       <div className="inline-block p-4 ">
-        <Link to={`/`} className="ms-10 hover:underline hover:text-slate-700">
+        <Link
+          to={`/cart`}
+          className="ms-10 hover:underline hover:text-slate-700"
+        >
           Go Back
         </Link>
       </div>
@@ -48,12 +51,12 @@ const CheckoutPage = ({ stripePromise }) => {
         <div classNam4e="pb-10">
           <p className="text-center font-bold text-3xl">Checkout</p>
           <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr]">
-            <div className="bg-slate-200 rounded-lg p-2">
+            <div className="bg-slate-200 rounded-lg p-2 md:order-1 order-2">
               <CheckoutForm products={items} stripePromise={stripePromise} />
             </div>
 
             <div
-              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start md:ml-0 md:mr-12 mt-4 ml-6 mr-6"
+              className="bg-gray-100 shadow-md rounded-lg p-6 border border-black flex flex-col flex-shrink-0 justify-start md:ml-0 md:mr-12 mt-4 ml-6 mr-6 md:order-2 order-1"
               style={{ height: "min-content" }}
             >
               {images.length === 1 ? (

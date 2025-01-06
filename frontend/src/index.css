@@ -20,6 +20,11 @@
     @apply font-poppins text-slate-50 hover:underline px-5 transition-colors duration-300 hover:text-hotPink;
   }
 
+  .NavLink:hover {
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.7), 0 0 10px rgba(255, 0, 255, 0.6),
+      0 0 15px rgba(255, 0, 255, 0.5);
+  }
+
   .navbar-container {
     @apply mx-auto max-w-7xl px-2 sm:px-6 lg:px-8;
   }
@@ -45,6 +50,10 @@
 
   .site-title {
     @apply md:block text-white text-2xl font-bold ml-2 transition-colors duration-300 hover:text-hotPink;
+  }
+  .site-title:hover {
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.7), 0 0 10px rgba(255, 0, 255, 0.6),
+      0 0 15px rgba(255, 0, 255, 0.5);
   }
 
   .navbar-right {

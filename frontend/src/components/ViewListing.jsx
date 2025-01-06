@@ -47,7 +47,7 @@ const ViewListing = ({ product }) => {
                 </button>
               </Link>
               <Link to={"/"}>
-                <p className="text-gray-400 hover:text-gray-300 py-4">Continue Shopping?</p>
+                <p className="text-gray-400 hover:text-hotPink py-4">Continue Shopping?</p>
               </Link>
             </div>
           ) : (

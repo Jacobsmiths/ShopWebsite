@@ -26,10 +26,15 @@ const AboutPage = () => {
           src={jacob}
         />
         <p className="AboutText md:text-lg sm:text-xs">
-          Yo Whatsup, this is Jacob. I am the one who made the website and did
-          nothing regarding the artwork. I am an aspiring software engineer so
-          if you have any quetions or inquiries please feel free to reach out.
-          My linkedin is attatched to the bottom of the page
+          Yo Whatsup, this is Jacob. I am the guy who made the website. So
+          basically, I am renting a server where I am running nginx to control
+          access to the server and then running a node js backend as well as a
+          vite react frontend. The way the website works is via a connection to
+          a google sheets file that controls all the items that are displayed.
+          This is my first ever fully developed website and my code is public on
+          my github, althought it does not have on there what or how I am
+          running the server. If you have any inquiries please contact me via my
+          LinkedIn on the footer of the website.
         </p>
       </div>
     </div>
