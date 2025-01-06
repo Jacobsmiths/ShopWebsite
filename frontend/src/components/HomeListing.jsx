@@ -36,16 +36,20 @@ const HomeListing = ({ product }) => {
             inner={
               <>
                 <h3 className="text-xl font-bold">{name}</h3>
-                <body className="overlap-container">
-                  <div class="overlapping-images w-full h-auto">
-                    <img src={images[0]} alt={images[0]} class="bottom-image" />
+                <div className="overlap-container">
+                  <div className="overlapping-images w-full h-auto">
+                    <img
+                      src={images[0]}
+                      alt={images[0]}
+                      className="bottom-image"
+                    />
                     <img
                       src={SoldOutImage}
                       alt="Soldout.png"
-                      class="top-image"
+                      className="top-image"
                     />
                   </div>
-                </body>
+                </div>
                 <div className="text-gray-500 text-right px-2 font-bold">
                   Sold Out
                 </div>

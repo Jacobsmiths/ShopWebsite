@@ -41,6 +41,7 @@ const ProductListings = () => {
             breakpointCols={breakpointColumnsObj}
             className="gallery"
             columnClassName="gallery-column"
+            key={"masonry"}
           >
             {products.map((product) => (
               <div className="p-4">

@@ -15,6 +15,8 @@ import ContactPage from "./pages/ContactPage";
 import AboutPage from "./pages/AboutPage";
 import { loadStripe } from "@stripe/stripe-js";
 import SoldOutPage from "./pages/SoldOutPage";
+import { CartProvider } from "./contexts/CartContext";
+import CartPage from "./pages/CartPage";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -25,7 +27,7 @@ const App = () => {
         <Route index element={<HomePage />} />
         <Route path="view/:id" element={<ViewPage />} loader={productLoader} />
         <Route
-          path="checkout/:id"
+          path="checkout"
           element={<CheckoutPage stripePromise={stripePromise} />}
         />
         <Route
@@ -33,6 +35,7 @@ const App = () => {
           element={<SoldOutPage />}
           loader={productLoader}
         />
+        <Route path="cart" element={<CartPage />} />
         <Route path="complete" element={<CompletePage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="contact" element={<ContactPage />} />
@@ -41,7 +44,11 @@ const App = () => {
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <CartProvider>
+      <RouterProvider router={router} />
+    </CartProvider>
+  );
 };
 
 export default App;
