@@ -14,28 +14,31 @@ const HomeListing = ({ product }) => {
       {available ? (
         <NavLink to={link}>
           <ItemCard
-            other="border-[2px] border-black transition-colors duration-300 hover:border-hotPink"
+            other="border-[2px] border-black transition-colors duration-300 hover:border-hotPink hover:shadow"
             inner={
               <>
-                <h3 className="text-xl font-bold">{name}</h3>
+                <h3 className="text-xl font-bold py-4">{name}</h3>
                 <img
                   src={images[0]}
                   alt={images[0]}
                   className="w-full h-auto"
                 />
-                <div className="text-gray-500 text-right px-2">{price}</div>
+                <div className="text-gray-500 text-right px-2 py-2">
+                  {price}
+                </div>
               </>
             }
+            size={"px-4"}
           />
         </NavLink>
       ) : (
         <NavLink to={soldOutLink}>
           <ItemCard
             className=""
-            other="border-[2px] border-black transition-colors duration-300 hover:border-hotPink"
+            other="border-[2px] border-black transition-colors duration-300 hover:border-hotPink hover:shadow"
             inner={
               <>
-                <h3 className="text-xl font-bold">{name}</h3>
+                <h3 className="text-xl font-bold py-4">{name}</h3>
                 <div className="overlap-container">
                   <div className="overlapping-images w-full h-auto">
                     <img
@@ -50,11 +53,12 @@ const HomeListing = ({ product }) => {
                     />
                   </div>
                 </div>
-                <div className="text-gray-500 text-right px-2 font-bold">
+                <div className="text-gray-500 text-right px-2 py-2 font-bold">
                   Sold Out
                 </div>
               </>
             }
+            size="px-4"
           />
         </NavLink>
       )}

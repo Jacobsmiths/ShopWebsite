@@ -26,15 +26,15 @@ const AboutPage = () => {
           src={jacob}
         />
         <p className="AboutText md:text-lg sm:text-xs">
-          Yo Whatsup, this is Jacob. I am the guy who made the website. So
-          basically, I am renting a server where I am running nginx to control
-          access to the server and then running a node js backend as well as a
-          vite react frontend. The way the website works is via a connection to
-          a google sheets file that controls all the items that are displayed.
-          This is my first ever fully developed website and my code is public on
-          my github, althought it does not have on there what or how I am
-          running the server. If you have any inquiries please contact me via my
-          LinkedIn on the footer of the website.
+          Yo Whatsup, this is Jacob, and I made the website. This website is a
+          full-stack project consisting of a backend running a node js server
+          and a frontend powered by Vite React and tailwind CSS. The backend API
+          supplies the front end with data stored in an SQL database, which the
+          owner of the website manipulates via the backend using a secure Google
+          Sheets file. This project also included setting up a server that runs
+          nginx to serve the frontend or direct API calls and handling HTTP and
+          HTTP calls. The code for the website can be found on my GitHub, which
+          you can get from my LinkedIn attached in the footer.
         </p>
       </div>
     </div>
